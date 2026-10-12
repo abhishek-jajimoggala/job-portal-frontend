@@ -1,44 +1,16 @@
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function JobCard({ job, saveJob }) {
   const navigate = useNavigate();
 
   const handleApply = () => {
-    const loggedUser = JSON.parse(
-      localStorage.getItem("loggedUser")
-    );
+    const userId =
+      sessionStorage.getItem("userId");
 
-    if (!loggedUser) {
-      alert("Please Login First");
+    if (!userId) {
+      toast.warning("Please Login First");
       navigate("/login");
-      return;
-    }
-
-    // Get latest user data
-    const users =
-      JSON.parse(localStorage.getItem("users")) || [];
-
-    const currentUser = users.find(
-      (user) =>
-        user.email?.toLowerCase() ===
-        loggedUser.email?.toLowerCase()
-    );
-
-    // Profile completion check
-    const isProfileComplete =
-      currentUser &&
-      currentUser.name?.trim() &&
-      currentUser.email?.trim() &&
-      currentUser.phone?.trim() &&
-      currentUser.country?.trim() &&
-      currentUser.state?.trim() &&
-      currentUser.city?.trim() &&
-      currentUser.skills?.trim() &&
-      currentUser.resume;
-
-    if (!isProfileComplete) {
-      alert("Please Complete Your Profile First");
-      navigate("/profile");
       return;
     }
 
@@ -57,8 +29,11 @@ function JobCard({ job, saveJob }) {
       diffTime / (1000 * 60 * 60 * 24)
     );
 
-    if (diffDays === 0) return "Today";
-    if (diffDays === 1) return "1 Day Ago";
+    if (diffDays <= 0) return "Today";
+
+    if (diffDays === 1) {
+      return "1 Day Ago";
+    }
 
     return `${diffDays} Days Ago`;
   };
@@ -69,38 +44,51 @@ function JobCard({ job, saveJob }) {
 
         <div className="card-body d-flex flex-column">
 
-          <h5 className="text-primary mb-3">
-            {job.company}
-          </h5>
+          <div className="d-flex justify-content-between align-items-center mb-3">
 
-          <div className="d-flex justify-content-between align-items-start mb-2">
-            <h4 className="fw-bold">
-              {job.title}
-            </h4>
+            <h5 className="text-primary fw-bold mb-0">
+              {job.company_name}
+            </h5>
 
             <span className="badge bg-success">
-              {job.type || "Full Time"}
+              {job.type ||
+                job.job_type ||
+                "Full Time"}
             </span>
+
           </div>
 
-          <p className="mb-1">
+          <h4 className="fw-bold mb-3">
+            {job.job_title}
+          </h4>
+
+          <p className="mb-2">
             📍 {job.location}
           </p>
 
-          <p className="mb-1">
-            💰 {job.salary}
+          <p className="mb-2">
+            💰 {job.salary || "Not Disclosed"}
           </p>
 
-          <p className="mb-1">
-            🧑‍💻 {job.experience}
+          <p className="mb-2">
+            🧑‍💻 {job.experience || "Fresher"}
           </p>
 
-          <p className="mb-3 text-secondary">
-            🕒 {getDaysAgo(job.createdAt)}
+          <p className="text-secondary mb-3">
+            🕒{" "}
+            {getDaysAgo(
+              job.created_at ||
+                job.createdAt
+            )}
           </p>
 
           <p className="text-muted">
-            {job.description?.substring(0, 100)}...
+            {job.description
+              ? `${job.description.substring(
+                  0,
+                  100
+                )}...`
+              : "No Description Available"}
           </p>
 
           <div className="skills-container mb-3">
@@ -120,7 +108,7 @@ function JobCard({ job, saveJob }) {
               ))
             ) : (
               <span className="text-muted">
-                No Skills
+                No Skills Available
               </span>
             )}
 
@@ -144,7 +132,9 @@ function JobCard({ job, saveJob }) {
 
             <button
               className="btn btn-outline-success"
-              onClick={() => saveJob(job)}
+              onClick={() =>
+                saveJob?.(job)
+              }
             >
               Save Job
             </button>

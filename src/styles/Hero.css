@@ -2,220 +2,374 @@
    HERO SECTION
 ========================= */
 
-.hero-section{
-  min-height:90vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:40px 20px;
+.hero-section {
+  min-height: 90vh;
+  padding: 60px 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   background:
     linear-gradient(
-      rgba(15,23,42,0.65),
-      rgba(15,23,42,0.65)
+      rgba(15, 23, 42, 0.72),
+      rgba(15, 23, 42, 0.72)
     ),
     url("https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1600&q=80");
 
-  background-size:cover;
-  background-position:center;
-  background-repeat:no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
-.hero-title{
-  color:#fff;
-  font-size:64px;
-  font-weight:800;
-  margin-bottom:15px;
-  letter-spacing:-1px;
+.hero-section .container {
+  width: 100%;
+  max-width: 1400px;
+  text-align: center;
 }
 
-.hero-subtitle{
-  color:#e2e8f0;
-  font-size:20px;
-  margin-bottom:40px;
+
+/* =========================
+   HERO TITLE
+========================= */
+
+.hero-title {
+  margin: 0 0 15px;
+
+  color: #ffffff;
+
+  font-size: 58px;
+  font-weight: 800;
+  line-height: 1.2;
+
+  letter-spacing: -1px;
+
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
 }
+
+.hero-title span {
+  color: #60a5fa;
+}
+
+
+/* =========================
+   HERO SUBTITLE
+========================= */
+
+.hero-subtitle {
+  max-width: 750px;
+
+  margin: 0 auto 35px;
+
+  color: #e2e8f0;
+
+  font-size: 19px;
+  font-weight: 400;
+  line-height: 1.6;
+
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.35);
+}
+
 
 /* =========================
    SEARCH BOX
 ========================= */
 
-.search-box{
-  max-width:950px;
-  margin:40px auto;
-  background:#fff;
-  border-radius:14px;
-  display:flex;
-  align-items:center;
-  overflow:hidden;
-  box-shadow:0 10px 30px rgba(0,0,0,.15);
+.search-box {
+  width: 1200px;
+  max-width: 95%;
+  height: 72px;
+
+  margin: 35px auto;
+
+  display: flex;
+  align-items: center;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+
+  overflow: hidden;
+
+  box-shadow: none;
 }
 
-.search-field{
-  flex:1;
-  display:flex;
-  align-items:center;
-  padding:0 20px;
+
+/* =========================
+   SEARCH FIELD
+========================= */
+
+.search-field {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 20px;
+
+  background: #ffffff;
 }
 
-.search-field i{
-  font-size:20px;
-  color:#64748b;
+.search-field i {
+  flex-shrink: 0;
+
+  color: #64748b;
+
+  font-size: 19px;
 }
 
-.search-field input{
-  width:100%;
-  height:72px;
-  border:none;
-  outline:none;
-  padding-left:15px;
-  font-size:18px;
-  font-weight:500;
-  background:transparent;
+.search-field input {
+  width: 100%;
+  height: 100%;
+
+  padding: 0 12px;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  color: #1e293b;
+
+  font-size: 16px;
+  font-weight: 400;
+
+  box-shadow: none;
 }
 
-.search-field input::placeholder{
-  color:#94a3b8;
+.search-field input::placeholder {
+  color: #94a3b8;
 }
 
-.search-btn{
-  width:140px;
-  min-width:140px;
-  height:72px;
-  border:none;
-  background:#2563eb;
-  color:#fff;
-  font-size:17px;
-  font-weight:600;
-  cursor:pointer;
-  transition:.3s;
+
+/* =========================
+   SEARCH BUTTON
+========================= */
+
+.search-btn {
+  width: 140px;
+  min-width: 140px;
+  height: 72px;
+
+  border: none;
+
+  background: #2563eb;
+  color: #ffffff;
+
+  font-size: 16px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: background 0.2s ease;
 }
 
-.search-btn:hover{
-  background:#1d4ed8;
+.search-btn:hover {
+  background: #1d4ed8;
 }
+
 
 /* =========================
    HERO STATS
 ========================= */
 
-.hero-stats{
-  margin-top:50px;
-  display:flex;
-  justify-content:center;
-  gap:25px;
-  flex-wrap:wrap;
+.hero-stats {
+  margin-top: 45px;
+
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+
+  gap: 18px;
+
+  flex-wrap: wrap;
 }
 
-.stat-card{
-  min-width:180px;
-  padding:20px;
-  border-radius:20px;
+.stat-card {
+  width: 180px;
+  min-width: 180px;
 
-  background:rgba(255,255,255,.15);
-  backdrop-filter:blur(10px);
+  padding: 18px 20px;
 
-  color:#f5f2f2;
-  transition:.3s;
+  background: rgba(255, 255, 255, 0.13);
+
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 12px;
+
+  color: #ffffff;
+
+  backdrop-filter: blur(10px);
+
+  transition: transform 0.2s ease;
 }
 
-.stat-card:hover{
-  transform:translateY(-5px);
+.stat-card:hover {
+  transform: translateY(-4px);
 }
 
-.stat-card h3{
-  font-size:34px;
-  font-weight:700;
-  margin-bottom:5px;
+.stat-card h3 {
+  margin: 0 0 5px;
+
+  color: #ffffff;
+
+  font-size: 30px;
+  font-weight: 700;
 }
 
-.stat-card p{
-  margin:0;
-  font-size:16px;
+.stat-card p {
+  margin: 0;
+
+  color: #e2e8f0;
+
+  font-size: 14px;
 }
+
 
 /* =========================
    TABLET
 ========================= */
 
-@media(max-width:992px){
+@media (max-width: 992px) {
 
-  .hero-title{
-    font-size:48px;
+  .hero-section {
+    min-height: 85vh;
+    padding: 50px 20px;
   }
 
-  .hero-subtitle{
-    font-size:18px;
+  .hero-title {
+    font-size: 46px;
   }
 
+  .hero-subtitle {
+    font-size: 17px;
+  }
+
+  .search-box {
+    width: 90%;
+    max-width: 90%;
+  }
 }
+
 
 /* =========================
    MOBILE
 ========================= */
 
-@media(max-width:768px){
+@media (max-width: 768px) {
 
-  .hero-section{
-    padding:70px 15px;
+  .hero-section {
+    min-height: auto;
+    padding: 65px 15px;
+
+    background:
+      linear-gradient(
+        rgba(15, 23, 42, 0.70),
+        rgba(15, 23, 42, 0.70)
+      ),
+      url("https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1200&q=80");
+
+    background-size: cover;
+    background-position: center;
   }
 
-  .hero-title{
-    font-size:38px;
+  .hero-title {
+    font-size: 36px;
+    line-height: 1.2;
   }
 
-  .hero-subtitle{
-    font-size:16px;
+  .hero-subtitle {
+    padding: 0 10px;
+
+    font-size: 15px;
+    line-height: 1.5;
   }
 
-  .search-box{
-    flex-direction:column;
-    padding:12px;
-    border-radius:15px;
+  .search-box {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+
+    margin: 25px auto;
+    padding: 7px;
+
+    display: flex;
+    flex-direction: column;
+
+    border-radius: 10px;
   }
 
-  .search-field{
-    width:100%;
+  .search-field {
+    width: 100%;
+    height: 55px;
+
+    padding: 0 10px;
+
+    box-sizing: border-box;
   }
 
-  .search-field input{
-    height:60px;
-    font-size:16px;
+  .search-field input {
+    height: 55px;
+
+    padding: 0 10px;
+
+    font-size: 15px;
   }
 
-  .search-btn{
-    width:100%;
-    height:55px;
-    margin-top:10px;
+  .search-btn {
+    width: 100%;
+    min-width: 100%;
+    height: 48px;
+
+    margin-top: 7px;
+
+    border-radius: 7px;
   }
 
-  .hero-stats{
-    gap:15px;
+  .hero-stats {
+    margin-top: 30px;
+    gap: 10px;
   }
 
-  .stat-card{
-    min-width:140px;
-    padding:15px;
+  .stat-card {
+    width: calc(50% - 5px);
+    min-width: 0;
+
+    padding: 14px 10px;
   }
 
-  .stat-card h3{
-    font-size:26px;
+  .stat-card h3 {
+    font-size: 25px;
   }
 
+  .stat-card p {
+    font-size: 13px;
+  }
 }
 
-@media(max-width:576px){
 
-  .hero-title{
-    font-size:30px;
+/* =========================
+   SMALL MOBILE
+========================= */
+
+@media (max-width: 480px) {
+
+  .hero-section {
+    padding: 55px 12px;
   }
 
-  .hero-subtitle{
-    font-size:14px;
+  .hero-title {
+    font-size: 30px;
   }
 
-  .stat-card{
-    width:100%;
-    max-width:250px;
+  .hero-subtitle {
+    font-size: 14px;
   }
 
+  .stat-card {
+    width: 100%;
+    max-width: 230px;
+  }
 }

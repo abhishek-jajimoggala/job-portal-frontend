@@ -1,60 +1,77 @@
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import jobs from "../data/jobs";
 import { toast } from "react-toastify";
 
 function JobDetails() {
   const { id } = useParams();
 
-  const adminJobs =
-    JSON.parse(localStorage.getItem("adminJobs")) || [];
+  const [job, setJob] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const allJobs = [...jobs, ...adminJobs];
-
-  const job = allJobs.find(
-    (item) => String(item.id) === String(id)
+  const loggedUser = JSON.parse(
+    localStorage.getItem("loggedUser")
   );
 
-  const loggedUser =
-    JSON.parse(localStorage.getItem("loggedUser"));
+  useEffect(() => {
+    fetch("http://localhost:5000/api/jobs")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === "success") {
+          const selectedJob = data.jobs.find(
+            (item) =>
+              String(item.id) === String(id)
+          );
 
-  const applications =
-    JSON.parse(localStorage.getItem("applications")) || [];
-
-  const alreadyApplied = applications.find(
-    (app) =>
-      app.userEmail === loggedUser?.email &&
-      String(app.jobId) === String(id)
-  );
+          setJob(selectedJob);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Failed to load job");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [id]);
 
   const saveJob = () => {
-  if (!loggedUser) {
-    toast.warning("Please Login First");
-    return;
+    if (!loggedUser) {
+      toast.warning("Please Login First");
+      return;
+    }
+
+    const key = `savedJobs_${loggedUser.email}`;
+
+    const savedJobs =
+      JSON.parse(localStorage.getItem(key)) || [];
+
+    const alreadySaved = savedJobs.find(
+      (item) =>
+        String(item.id) === String(job.id)
+    );
+
+    if (alreadySaved) {
+      toast.info("Job Already Saved");
+      return;
+    }
+
+    savedJobs.push(job);
+
+    localStorage.setItem(
+      key,
+      JSON.stringify(savedJobs)
+    );
+
+    toast.success("Job Saved Successfully");
+  };
+
+  if (loading) {
+    return (
+      <div className="container mt-5 text-center">
+        <h3>Loading...</h3>
+      </div>
+    );
   }
-
-  const key = `savedJobs_${loggedUser.email}`;
-
-  const savedJobs =
-    JSON.parse(localStorage.getItem(key)) || [];
-
-  const alreadySaved = savedJobs.find(
-    (item) => String(item.id) === String(job.id)
-  );
-
-  if (alreadySaved) {
-    toast.info("Job Already Saved");
-    return;
-  }
-
-  savedJobs.push(job);
-
-  localStorage.setItem(
-    key,
-    JSON.stringify(savedJobs)
-  );
-
-  toast.success("Job Saved Successfully");
-};
 
   if (!job) {
     return (
@@ -72,7 +89,7 @@ function JobDetails() {
         <div className="card-body p-4">
 
           <h2 className="fw-bold">
-            {job.title}
+            {job.job_title}
           </h2>
 
           <h5 className="text-primary mb-3">
@@ -103,12 +120,21 @@ function JobDetails() {
             <div className="col-md-6">
               <p>
                 <strong>💼 Job Type:</strong>{" "}
-                {job.type}
+                {job.job_type || "Full Time"}
               </p>
 
               <p>
                 <strong>🏢 Company:</strong>{" "}
-                {job.company}
+                {job.company_name}
+              </p>
+
+              <p>
+                <strong>📅 Posted:</strong>{" "}
+                {job.created_at
+                  ? new Date(
+                      job.created_at
+                    ).toLocaleDateString()
+                  : "Recently"}
               </p>
             </div>
 
@@ -131,33 +157,24 @@ function JobDetails() {
           </h4>
 
           <div className="mb-4">
+
             {job.skills ? (
-              Array.isArray(job.skills) ? (
-                job.skills.map((skill, index) => (
+              String(job.skills)
+                .split(",")
+                .map((skill, index) => (
                   <span
                     key={index}
                     className="badge bg-primary me-2 mb-2"
                   >
-                    {skill}
+                    {skill.trim()}
                   </span>
                 ))
-              ) : (
-                job.skills
-                  .split(",")
-                  .map((skill, index) => (
-                    <span
-                      key={index}
-                      className="badge bg-primary me-2 mb-2"
-                    >
-                      {skill.trim()}
-                    </span>
-                  ))
-              )
             ) : (
               <span className="text-muted">
                 No Skills Mentioned
               </span>
             )}
+
           </div>
 
           <div className="d-flex gap-2 flex-wrap">
@@ -169,27 +186,18 @@ function JobDetails() {
               ❤️ Save Job
             </button>
 
-            {alreadyApplied ? (
-              <button
-                className="btn btn-secondary"
-                disabled
-              >
-                ✓ Applied
-              </button>
-            ) : (
-              <Link
-                to={`/apply/${job.id}`}
-                className="btn btn-success"
-              >
-                Apply Now
-              </Link>
-            )}
+            <Link
+              to={`/apply/${job.id}`}
+              className="btn btn-success"
+            >
+              Apply Now
+            </Link>
 
             <Link
               to="/jobs"
               className="btn btn-dark"
             >
-              Back
+              ← Back to Jobs
             </Link>
 
           </div>

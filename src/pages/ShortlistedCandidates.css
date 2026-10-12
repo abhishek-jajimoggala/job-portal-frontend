@@ -150,3 +150,625 @@
   width:100%;
   margin-bottom:35px;
 }
+
+/* =========================================================
+   SHORTLISTED PAGE
+========================================================= */
+
+.shortlisted-page {
+  width: 100%;
+  min-height: 100vh;
+  padding: 95px 20px 50px;
+  background: linear-gradient(135deg, #e8fff2, #f8fffc);
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   MAIN CONTAINER
+========================================================= */
+
+.shortlisted-page .container-fluid {
+  width: 100%;
+  max-width: 1250px;
+  margin: 0 auto;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+
+/* =========================================================
+   TOP ACTIONS
+========================================================= */
+
+.shortlisted-top-actions {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+/* Dashboard button */
+
+.shortlisted-top-actions > a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto !important;
+  min-width: 135px;
+  margin: 0 !important;
+  padding: 10px 20px;
+  border-radius: 10px !important;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Refresh + Excel wrapper */
+
+.shortlisted-action-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+/* Refresh / Excel buttons */
+
+.shortlisted-action-buttons button {
+  width: auto !important;
+  min-width: 125px;
+  min-height: 42px;
+  margin: 0 !important;
+  padding: 9px 18px !important;
+  border-radius: 9px !important;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.shortlisted-header {
+  width: 100%;
+  min-height: 150px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 25px;
+
+  background: linear-gradient(135deg, #198754, #20c997);
+  border-radius: 20px;
+
+  color: #ffffff;
+
+  padding: 30px 35px;
+  margin-bottom: 30px;
+
+  box-shadow: 0 10px 30px rgba(25, 135, 84, 0.25);
+
+  box-sizing: border-box;
+}
+
+.shortlisted-header h1 {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.shortlisted-header p {
+  margin: 8px 0 0;
+  font-size: 15px;
+  opacity: 0.95;
+}
+
+
+/* =========================================================
+   TOTAL COUNT
+========================================================= */
+
+.shortlisted-count-box {
+  min-width: 190px;
+  padding: 15px 22px;
+
+  background: #ffffff;
+
+  border: 1px solid #d1fae5;
+  border-radius: 12px;
+
+  text-align: center;
+
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.count-number {
+  display: block;
+
+  color: #198754;
+
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.count-label {
+  display: block;
+
+  margin-top: 4px;
+
+  color: #64748b;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   SHORTLISTED CARD
+========================================================= */
+
+.shortlisted-card {
+  width: 100%;
+
+  border: none !important;
+  border-radius: 20px !important;
+
+  margin-bottom: 25px !important;
+
+  overflow: hidden;
+
+  background: #ffffff;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+
+  box-sizing: border-box;
+}
+
+.shortlisted-card:hover {
+  transform: translateY(-5px);
+
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.shortlisted-card .card-body {
+  padding: 28px !important;
+}
+
+
+/* =========================================================
+   CANDIDATE IMAGE
+========================================================= */
+
+.candidate-img {
+  width: 120px;
+  height: 120px;
+
+  border-radius: 50%;
+
+  object-fit: cover;
+
+  border: 5px solid #198754;
+}
+
+
+/* =========================================================
+   CANDIDATE NUMBER
+========================================================= */
+
+.candidate-number {
+  display: inline-block;
+
+  margin-bottom: 6px;
+
+  padding: 4px 10px;
+
+  background: #ecfdf5;
+  color: #198754;
+
+  border-radius: 6px;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   CANDIDATE NAME
+========================================================= */
+
+.candidate-name {
+  margin: 0 0 10px;
+
+  font-size: 28px;
+  font-weight: 700;
+
+  color: #166534;
+}
+
+
+/* =========================================================
+   CANDIDATE DETAILS
+========================================================= */
+
+.shortlisted-card p {
+  margin-bottom: 8px;
+
+  color: #4b5563;
+
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   SKILLS
+========================================================= */
+
+.skills-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+
+  margin-top: 12px;
+}
+
+.skills-wrapper .badge {
+  width: auto !important;
+  margin: 0 !important;
+
+  padding: 7px 11px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  border-radius: 20px;
+}
+
+
+/* =========================================================
+   CARD ACTIONS
+========================================================= */
+
+/*
+   IMPORTANT:
+   Global .btn width remove chesam.
+   Only candidate action buttons controlled here.
+*/
+
+.shortlisted-card .d-grid {
+  width: 100%;
+}
+
+.shortlisted-card .d-grid .btn {
+  width: 100% !important;
+
+  min-height: 42px;
+
+  margin: 0 !important;
+
+  border-radius: 8px;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   CUSTOM MODAL
+========================================================= */
+
+.custom-modal {
+  position: fixed;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+  background: rgba(0, 0, 0, 0.6);
+
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+
+  padding: 20px;
+
+  z-index: 9999;
+
+  box-sizing: border-box;
+}
+
+.custom-modal-content {
+  width: 90%;
+  max-width: 700px;
+
+  background: #ffffff;
+
+  border-radius: 20px;
+
+  overflow: hidden;
+
+  animation: popup 0.3s ease;
+
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+}
+
+
+/* =========================================================
+   MODAL HEADER
+========================================================= */
+
+.custom-modal-header {
+  background: #198754;
+
+  color: #ffffff;
+
+  padding: 15px 20px;
+
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+}
+
+.custom-modal-header h4 {
+  margin: 0;
+
+  font-size: 20px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   MODAL BODY
+========================================================= */
+
+.custom-modal-body {
+  padding: 25px;
+
+  max-height: 75vh;
+
+  overflow-y: auto;
+}
+
+.custom-modal-body h3 {
+  margin-bottom: 15px;
+
+  color: #166534;
+
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.custom-modal-body h5 {
+  margin-bottom: 12px;
+
+  color: #166534;
+
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.custom-modal-body p {
+  margin-bottom: 8px;
+
+  color: #4b5563;
+
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   MODAL PROFILE IMAGE
+========================================================= */
+
+.modal-profile-img {
+  width: 140px;
+  height: 140px;
+
+  border-radius: 50%;
+
+  object-fit: cover;
+
+  border: 5px solid #198754;
+}
+
+
+/* Modal resume button */
+
+.custom-modal-body .btn {
+  width: auto !important;
+
+  min-width: 140px;
+
+  margin-top: 10px;
+}
+
+
+/* =========================================================
+   POPUP ANIMATION
+========================================================= */
+
+@keyframes popup {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 768px) {
+
+  .shortlisted-page {
+    padding: 90px 12px 35px;
+  }
+
+  .shortlisted-page .container-fluid {
+    max-width: 100%;
+  }
+
+
+  /* Top buttons */
+
+  .shortlisted-top-actions {
+    flex-direction: column;
+
+    align-items: stretch;
+
+    gap: 10px;
+  }
+
+  .shortlisted-top-actions > a {
+    width: 100% !important;
+  }
+
+  .shortlisted-action-buttons {
+    width: 100%;
+
+    display: flex;
+
+    gap: 10px;
+  }
+
+  .shortlisted-action-buttons button {
+    flex: 1;
+
+    width: auto !important;
+    min-width: 0;
+  }
+
+
+  /* Header */
+
+  .shortlisted-header {
+    flex-direction: column;
+
+    align-items: stretch;
+
+    text-align: center;
+
+    padding: 25px 20px;
+  }
+
+  .shortlisted-header h1 {
+    font-size: 25px;
+  }
+
+  .shortlisted-header p {
+    font-size: 14px;
+  }
+
+  .shortlisted-count-box {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+
+  /* Candidate */
+
+  .shortlisted-card .card-body {
+    padding: 22px !important;
+  }
+
+  .candidate-img {
+    width: 100px;
+    height: 100px;
+
+    margin-bottom: 15px;
+  }
+
+  .candidate-name {
+    font-size: 22px;
+  }
+
+
+  /* Candidate action buttons */
+
+  .shortlisted-card .d-grid .btn {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+
+  /* Modal */
+
+  .custom-modal {
+    padding: 12px;
+  }
+
+  .custom-modal-content {
+    width: 100%;
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+  .shortlisted-page {
+    padding: 85px 10px 30px;
+  }
+
+  .shortlisted-header {
+    border-radius: 15px;
+
+    padding: 20px 15px;
+  }
+
+  .shortlisted-header h1 {
+    font-size: 21px;
+  }
+
+  .candidate-name {
+    font-size: 20px;
+  }
+
+  .shortlisted-card {
+    border-radius: 15px !important;
+  }
+
+  .shortlisted-card .card-body {
+    padding: 18px !important;
+  }
+
+  .shortlisted-action-buttons {
+    flex-direction: column;
+  }
+
+  .shortlisted-action-buttons button {
+    width: 100% !important;
+  }
+
+  .custom-modal-body {
+    padding: 20px;
+  }
+
+  .modal-profile-img {
+    width: 120px;
+    height: 120px;
+  }
+
+}

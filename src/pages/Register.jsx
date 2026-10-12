@@ -21,7 +21,7 @@ function Register() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (
@@ -44,97 +44,110 @@ function Register() {
     if (
       form.password !== form.confirmPassword
     ) {
-      toast.warning("Passwords do not match");
+      toast.warning(
+        "Passwords do not match"
+      );
       return;
     }
 
-    let users =
-      JSON.parse(
-        localStorage.getItem("users")
-      ) || [];
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+          body: JSON.stringify({
+            name: form.name,
+            email: form.email,
+            password: form.password,
+            confirmPassword:
+              form.confirmPassword,
+          }),
+        }
+      );
 
-    const existingUser = users.find(
-      (user) =>
-        user.email
-          .toLowerCase()
-          .trim() ===
-        form.email
-          .toLowerCase()
-          .trim()
-    );
+      const data =
+        await response.json();
 
-    if (existingUser) {
-      toast.warning("User already exists");
-      return;
+      if (
+        response.ok &&
+        data.status === "success"
+      ) {
+        sessionStorage.setItem(
+          "otpEmail",
+          form.email
+        );
+
+        toast.success(
+          data.message
+        );
+
+        navigate("/verify-otp");
+      } else {
+        toast.error(
+          data.message
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(
+        "Server Error"
+      );
     }
-
-    const newUser = {
-      id: Date.now(),
-      name: form.name.trim(),
-      email: form.email.trim(),
-      password: form.password.trim(),
-
-      phone: "",
-      state: "",
-      skills: "",
-
-      tenth: "",
-      intermediate: "",
-      degree: "",
-
-      createdAt:
-        new Date().toISOString(),
-    };
-
-    users.push(newUser);
-
-    localStorage.setItem(
-      "users",
-      JSON.stringify(users)
-    );
-
-    toast.success(
-      "Registration Successful"
-    );
-
-    navigate("/login");
   };
 
   return (
     <div className="login-page">
-
       <div className="login-container">
 
         {/* Left Side */}
         <div className="login-left">
-
           <div className="overlay">
-  <h1>
-    Job <span style={{ color: "#60a5fa" }}>Portal</span>
-  </h1>
 
-  <p>
-    Join thousands of job seekers and find your dream career today.
-  </p>
+            <h1>
+              Job{" "}
+              <span
+                style={{
+                  color:
+                    "#60a5fa",
+                }}
+              >
+                Portal
+              </span>
+            </h1>
 
-  <img
-    src={jobImage}
-    alt="Job Portal"
-    className="login-image"
-  />
-</div>
+            <p>
+              Join thousands
+              of job seekers
+              and find your
+              dream career
+              today.
+            </p>
 
+            <img
+              src={jobImage}
+              alt="Job Portal"
+              className="login-image"
+            />
+
+          </div>
         </div>
 
         {/* Right Side */}
         <div className="login-right">
-
           <div className="login-card">
 
-            <h2>Create Account</h2>
+            <h2>
+              Create Account
+            </h2>
 
             <form
-              onSubmit={handleSubmit}
+              onSubmit={
+                handleSubmit
+              }
             >
 
               <div className="mb-3">
@@ -143,7 +156,9 @@ function Register() {
                   name="name"
                   className="form-control"
                   placeholder="Full Name"
-                  value={form.name}
+                  value={
+                    form.name
+                  }
                   onChange={
                     handleChange
                   }
@@ -157,7 +172,9 @@ function Register() {
                   name="email"
                   className="form-control"
                   placeholder="Email Address"
-                  value={form.email}
+                  value={
+                    form.email
+                  }
                   onChange={
                     handleChange
                   }
@@ -171,7 +188,9 @@ function Register() {
                   name="password"
                   className="form-control"
                   placeholder="Password"
-                  value={form.password}
+                  value={
+                    form.password
+                  }
                   onChange={
                     handleChange
                   }
@@ -204,8 +223,9 @@ function Register() {
 
             </form>
 
-            <p className="register-text">
-              Already have an account?
+            <p className="register-text mt-3">
+              Already have an
+              account?
               <Link to="/login">
                 {" "}
                 Login
@@ -213,11 +233,9 @@ function Register() {
             </p>
 
           </div>
-
         </div>
 
       </div>
-
     </div>
   );
 }

@@ -1,76 +1,178 @@
-import { useState, useEffect } from "react";
-import AdminNavbar from "../components/AdminNavbar";
-import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
-import "./ManageJobs.css";
 
-function ManageJobs() {
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
+import AdminNavbar from "../components/AdminNavbar";
+import "../styles/ManageJobs.css";
+
+function ManageJobs() { 
+  const [submitting, setSubmitting] = useState(false);
   const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [editId, setEditId] = useState(null);
 
-  const [newJob, setNewJob] = useState({
-    title: "",
-    company: "",
+  const loggedAdminId = Number(sessionStorage.getItem("admin_id"));
+
+  const [formData, setFormData] = useState({
+    job_title: "",
+    company_name: "",
     location: "",
     salary: "",
     experience: "",
-    type: "",
+    job_type: "Full Time",
     skills: "",
     description: "",
   });
 
+  // ==========================================
+  // FETCH ALL JOBS
+  // ==========================================
   useEffect(() => {
-    const savedJobs =
-      JSON.parse(localStorage.getItem("adminJobs")) || [];
-    setJobs(savedJobs);
+    fetchJobs();
   }, []);
 
+  const fetchJobs = async () => {
+    try {
+      setLoading(true);
+
+      const res = await axios.get(
+        "http://localhost:5000/api/jobs",
+        {
+          withCredentials: true,
+        }
+      );
+
+      console.log("JOBS API RESPONSE:", res.data);
+
+      if (res.data.status === "success") {
+        setJobs(res.data.jobs || []);
+      } else {
+        toast.error(
+          res.data.message || "Failed To Load Jobs"
+        );
+      }
+    } catch (err) {
+      console.error("FETCH JOBS ERROR:", err);
+
+      toast.error(
+        err.response?.data?.message ||
+          "Failed To Load Jobs"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ==========================================
+  // INPUT CHANGE
+  // ==========================================
   const handleChange = (e) => {
-    setNewJob({
-      ...newJob,
+    setFormData({
+      ...formData,
       [e.target.name]: e.target.value,
     });
   };
 
+  // ==========================================
+  // RESET FORM
+  // ==========================================
   const resetForm = () => {
-    setNewJob({
-      title: "",
-      company: "",
+    setFormData({
+      job_title: "",
+      company_name: "",
       location: "",
       salary: "",
       experience: "",
-      type: "",
+      job_type: "Full Time",
       skills: "",
       description: "",
     });
+
+    setEditId(null);
   };
 
-  const addJob = (e) => {
-    e.preventDefault();
+  // ==========================================
+  // SUBMIT
+  // ==========================================
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    const job = {
-      id: Date.now(),
-      ...newJob,
-      createdAt: new Date().toISOString(),
-    };
+  // Prevent double click
+  if (submitting) return;
 
-    const updatedJobs = [...jobs, job];
+  setSubmitting(true);
 
-    setJobs(updatedJobs);
+  try {
+    // ======================================
+    // UPDATE JOB
+    // ======================================
+    if (editId) {
+      const res = await axios.put(
+        `http://localhost:5000/api/update-job/${editId}`,
+        formData,
+        {
+          withCredentials: true,
+        }
+      );
 
-    localStorage.setItem(
-      "adminJobs",
-      JSON.stringify(updatedJobs)
-    );
+      toast.success(
+        res.data.message || "Job Updated Successfully"
+      );
+    }
+
+    // ======================================
+    // ADD NEW JOB
+    // ======================================
+    else {
+      const res = await axios.post(
+        "http://localhost:5000/api/add-job",
+        formData,
+        {
+          withCredentials: true,
+        }
+      );
+
+      toast.success(
+        res.data.message || "Job Added Successfully"
+      );
+    }
 
     resetForm();
+    fetchJobs();
 
-    toast.success("Job Added Successfully");
-  };
+  } catch (err) {
+    console.error("JOB SUBMIT ERROR:", err);
 
-  const editJob = (job) => {
-    setNewJob(job);
+    toast.error(
+      err.response?.data?.message ||
+        "Operation Failed"
+    );
+
+  } finally {
+    setSubmitting(false);
+  }
+};
+      
+
+  // ==========================================
+  // EDIT JOB
+  // ==========================================
+  const handleEdit = (job) => {
+    console.log("EDIT JOB:", job);
+
     setEditId(job.id);
+
+    setFormData({
+      job_title: job.job_title || "",
+      company_name: job.company_name || "",
+      location: job.location || "",
+      salary: job.salary || "",
+      experience: job.experience || "",
+      job_type: job.job_type || "Full Time",
+      skills: job.skills || "",
+      description: job.description || "",
+    });
 
     window.scrollTo({
       top: 0,
@@ -78,49 +180,45 @@ function ManageJobs() {
     });
   };
 
-  const updateJob = (e) => {
-  e.preventDefault();
+  // ==========================================
+  // DELETE JOB
+  // ==========================================
+  const handleDelete = async (job) => {
+    console.log("DELETE JOB:", job);
 
-  const updatedJobs = jobs.map((job) =>
-    job.id === editId
-      ? {
-          ...newJob,
-          id: editId,
-          createdAt: job.createdAt, // preserve original date
+    if (
+      !window.confirm(
+        "Are you sure you want to delete this job?"
+      )
+    ) {
+      return;
+    }
+
+    try {
+      const res = await axios.delete(
+        `http://localhost:5000/api/jobs/${job.id}`,
+        {
+          withCredentials: true,
         }
-      : job
-  );
+      );
 
-  setJobs(updatedJobs);
+      toast.success(
+        res.data.message ||
+          "Job Deleted Successfully"
+      );
 
-  localStorage.setItem(
-    "adminJobs",
-    JSON.stringify(updatedJobs)
-  );
+      fetchJobs();
+    } catch (err) {
+      console.error(
+        "DELETE JOB ERROR:",
+        err
+      );
 
-  setEditId(null);
-  resetForm();
-
-  toast.success("Job Updated Successfully");
-};
-
-  const deleteJob = (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this job?"
-    );
-
-    if (!confirmDelete) return;
-
-    const updatedJobs = jobs.filter(
-      (job) => job.id !== id
-    );
-
-    setJobs(updatedJobs);
-
-    localStorage.setItem(
-      "adminJobs",
-      JSON.stringify(updatedJobs)
-    );
+      toast.error(
+        err.response?.data?.message ||
+          "Failed To Delete Job"
+      );
+    }
   };
 
   return (
@@ -129,292 +227,494 @@ function ManageJobs() {
 
       <div className="manage-jobs-page">
 
+        {/* =====================================
+            PAGE HEADER
+        ===================================== */}
 
-        {/* Header */}
-        <div className="row align-items-center mb-4">
+        <div className="manage-jobs-header">
 
-  <div className="col-lg-8 col-md-12">
-    <div className="manage-jobs-header">
-      <h1>💼 Hiring Management</h1>
-      <p>
-        Create, update and manage job openings
-        across your organization
-      </p>
-    </div>
-  </div>
+          <div className="manage-jobs-heading">
 
-  <div className="col-lg-4 col-md-12 text-lg-end mt-3 mt-lg-0">
+            <h1>
+              Manage Jobs
+            </h1>
 
-    <div className="d-inline-flex gap-2 flex-wrap">
+            <p>
+              Add, edit and manage all posted jobs
+            </p>
 
-      <div className="btn btn-primary">
-        Total Jobs: {jobs.length}
-      </div>
-
-      <Link
-        to="/admin"
-        className="btn btn-dark"
-      >
-        ← Dashboard
-      </Link>
-
-    </div>
-
-  </div>
-
-</div>
-
-        {/* Add / Update Form */}
-        <div className="card shadow border-0 mb-5">
-          <div className="card-body p-4">
-
-            <h4 className="mb-4">
-              {editId ? "Update Job" : "Add New Job"}
-            </h4>
-
-            <form
-              onSubmit={
-                editId ? updateJob : addJob
-              }
-            >
-              <input
-                type="text"
-                name="title"
-                placeholder="Job Title"
-                className="form-control mb-3"
-                value={newJob.title}
-                onChange={handleChange}
-                required
-              />
-
-              <input
-                type="text"
-                name="company"
-                placeholder="Company Name"
-                className="form-control mb-3"
-                value={newJob.company}
-                onChange={handleChange}
-                required
-              />
-
-              <input
-                type="text"
-                name="location"
-                placeholder="Location"
-                className="form-control mb-3"
-                value={newJob.location}
-                onChange={handleChange}
-                required
-              />
-
-              <input
-                type="text"
-                name="salary"
-                placeholder="Salary"
-                className="form-control mb-3"
-                value={newJob.salary}
-                onChange={handleChange}
-                required
-              />
-
-              <input
-                type="text"
-                name="experience"
-                placeholder="Experience"
-                className="form-control mb-3"
-                value={newJob.experience}
-                onChange={handleChange}
-                required
-              />
-
-              <select
-                name="type"
-                className="form-control mb-3"
-                value={newJob.type}
-                onChange={handleChange}
-                required
-              >
-                <option value="">
-                  Select Job Type
-                </option>
-
-                <option value="Full Time">
-                  Full Time
-                </option>
-
-                <option value="Part Time">
-                  Part Time
-                </option>
-
-                <option value="Remote">
-                  Remote
-                </option>
-              </select>
-
-              <input
-                type="text"
-                name="skills"
-                placeholder="React, JavaScript, Bootstrap"
-                className="form-control mb-3"
-                value={newJob.skills}
-                onChange={handleChange}
-                required
-              />
-
-              <textarea
-                name="description"
-                rows="4"
-                placeholder="Job Description"
-                className="form-control mb-3"
-                value={newJob.description}
-                onChange={handleChange}
-                required
-              />
-
-              <div className="d-flex gap-2">
-
-                <button
-                  type="submit"
-                  className={
-                    editId
-                      ? "btn btn-success"
-                      : "btn btn-primary"
-                  }
-                >
-                  {editId
-                    ? "Update Job"
-                    : "Add Job"}
-                </button>
-
-                {editId && (
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={() => {
-                      resetForm();
-                      setEditId(null);
-                    }}
-                  >
-                    Cancel
-                  </button>
-                )}
-
-              </div>
-            </form>
           </div>
+
+          <Link
+            to="/admin"
+            className="dashboard-btn"
+          >
+            ← Dashboard
+          </Link>
+
         </div>
 
-        {/* Jobs Table */}
-        <div className="card shadow border-0">
-          <div className="card-body">
+        <div className="manage-jobs-container">
 
-            <h4 className="mb-3">
-              Posted Jobs
-            </h4>
+          {/* =====================================
+              ADD / EDIT JOB
+          ===================================== */}
 
-            <div className="table-responsive">
+          <div className="card shadow-lg border-0 job-form-card">
 
-              <table className="table table-bordered table-hover align-middle">
+            <div className="card-body p-4">
 
-                <thead className="table-dark">
-                  <tr>
-                    <th>Title</th>
-                    <th>Company</th>
-                    <th>Location</th>
-                    <th>Salary</th>
-                    <th>Experience</th>
-                    <th>Type</th>
-                    <th>Skills</th>
-                    <th className="text-center">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
+              <div className="form-heading">
 
-                <tbody>
+                <h2>
+                  {editId
+                    ? "Edit Job"
+                    : "Add New Job"}
+                </h2>
 
-                  {jobs.length === 0 ? (
-                    <tr>
-                      <td
-                        colSpan="8"
-                        className="text-center"
-                      >
-                        No Jobs Available
-                      </td>
-                    </tr>
-                  ) : (
-                    jobs.map((job) => (
-                      <tr key={job.id}>
+                <p>
+                  {editId
+                    ? "Update the selected job details"
+                    : "Create a new job posting"}
+                </p>
 
-                        <td>{job.title}</td>
-                        <td>{job.company}</td>
-                        <td>{job.location}</td>
-                        <td>{job.salary}</td>
-                        <td>{job.experience}</td>
+              </div>
 
-                        <td>
-                          <span className="badge bg-success">
-                            {job.type}
-                          </span>
-                        </td>
+              <form onSubmit={handleSubmit}>
 
-                        <td>
-                          {job.skills
-                            ?.split(",")
+                <div className="row">
+
+                  {/* JOB TITLE */}
+                  <div className="col-md-6 mb-3">
+
+                    <label className="form-label">
+                      Job Title
+                    </label>
+
+                    <input
+                      type="text"
+                      name="job_title"
+                      className="form-control"
+                      placeholder="Enter job title"
+                      value={
+                        formData.job_title
+                      }
+                      onChange={handleChange}
+                      required
+                    />
+
+                  </div>
+
+                  {/* COMPANY */}
+                  <div className="col-md-6 mb-3">
+
+                    <label className="form-label">
+                      Company Name
+                    </label>
+
+                    <input
+                      type="text"
+                      name="company_name"
+                      className="form-control"
+                      placeholder="Enter company name"
+                      value={
+                        formData.company_name
+                      }
+                      onChange={handleChange}
+                      required
+                    />
+
+                  </div>
+
+                  {/* LOCATION */}
+                  <div className="col-md-6 mb-3">
+
+                    <label className="form-label">
+                      Location
+                    </label>
+
+                    <input
+                      type="text"
+                      name="location"
+                      className="form-control"
+                      placeholder="Enter location"
+                      value={
+                        formData.location
+                      }
+                      onChange={handleChange}
+                      required
+                    />
+
+                  </div>
+
+                  {/* SALARY */}
+                  <div className="col-md-6 mb-3">
+
+                    <label className="form-label">
+                      Salary
+                    </label>
+
+                    <input
+                      type="text"
+                      name="salary"
+                      className="form-control"
+                      placeholder="Example: ₹5 - ₹8 LPA"
+                      value={
+                        formData.salary
+                      }
+                      onChange={handleChange}
+                    />
+
+                  </div>
+
+                  {/* EXPERIENCE */}
+                  <div className="col-md-6 mb-3">
+
+                    <label className="form-label">
+                      Experience
+                    </label>
+
+                    <input
+                      type="text"
+                      name="experience"
+                      className="form-control"
+                      placeholder="Example: 0 - 2 Years"
+                      value={
+                        formData.experience
+                      }
+                      onChange={handleChange}
+                    />
+
+                  </div>
+
+                  {/* JOB TYPE */}
+                  <div className="col-md-6 mb-3">
+
+                    <label className="form-label">
+                      Job Type
+                    </label>
+
+                    <select
+                      name="job_type"
+                      className="form-select"
+                      value={
+                        formData.job_type
+                      }
+                      onChange={handleChange}
+                    >
+
+                      <option value="Full Time">
+                        Full Time
+                      </option>
+
+                      <option value="Part Time">
+                        Part Time
+                      </option>
+
+                      <option value="Remote">
+                        Remote
+                      </option>
+
+                      <option value="Internship">
+                        Internship
+                      </option>
+
+                    </select>
+
+                  </div>
+
+                  {/* SKILLS */}
+                  <div className="col-12 mb-3">
+
+                    <label className="form-label">
+                      Skills
+                    </label>
+
+                    <input
+                      type="text"
+                      name="skills"
+                      className="form-control"
+                      placeholder="Example: React, Python, SQL, Flask"
+                      value={
+                        formData.skills
+                      }
+                      onChange={handleChange}
+                    />
+
+                  </div>
+
+                  {/* DESCRIPTION */}
+                  <div className="col-12 mb-3">
+
+                    <label className="form-label">
+                      Description
+                    </label>
+
+                    <textarea
+                      name="description"
+                      className="form-control"
+                      rows="5"
+                      placeholder="Enter job description"
+                      value={
+                        formData.description
+                      }
+                      onChange={handleChange}
+                    />
+
+                  </div>
+
+                </div>
+
+                {/* BUTTONS */}
+                <div className="d-flex gap-2">
+
+                                      <button
+                      type="submit"
+                      className="btn btn-primary px-4"
+                      disabled={submitting}
+                    >
+                      {submitting
+                        ? editId
+                          ? "Updating..."
+                          : "Adding..."
+                        : editId
+                          ? "Update Job"
+                          : "Add Job"}
+                    </button>
+
+                  {editId && (
+                    <button
+                      type="button"
+                      className="btn btn-secondary px-4"
+                      onClick={resetForm}
+                    >
+                      Cancel
+                    </button>
+                  )}
+
+                </div>
+
+              </form>
+
+            </div>
+
+          </div>
+
+          {/* =====================================
+              ALL JOBS HEADER
+          ===================================== */}
+
+          <div className="posted-jobs-heading">
+
+            <div>
+
+              <h2>
+                All Posted Jobs
+              </h2>
+
+              <p>
+                {jobs.length} jobs available
+              </p>
+
+            </div>
+
+            <button
+              type="button"
+              className="refresh-jobs-btn"
+              onClick={fetchJobs}
+            >
+              ↻ Refresh
+            </button>
+
+          </div>
+
+          {/* =====================================
+              ALL JOBS
+          ===================================== */}
+
+          {loading ? (
+
+            <div className="loading-box">
+              <h4>
+                Loading Jobs...
+              </h4>
+            </div>
+
+          ) : jobs.length === 0 ? (
+
+            <div className="no-jobs-box">
+              <h4>
+                No Jobs Found
+              </h4>
+
+              <p>
+                Add your first job using the form above.
+              </p>
+            </div>
+
+          ) : (
+
+            <div className="row g-4">
+
+              {jobs.map((job) => (
+
+                <div
+                  key={job.id}
+                  className="col-xl-4 col-lg-6 col-md-6"
+                >
+
+                  <div className="card job-card shadow-sm h-100">
+
+                    <div className="card-body">
+
+                      {/* JOB TITLE */}
+
+                      <div className="job-card-top">
+
+                        <div>
+
+                          <h5 className="job-card-title">
+                            {job.job_title}
+                          </h5>
+
+                          <p className="job-company">
+                            {job.company_name}
+                          </p>
+
+                        </div>
+
+                        <span className="job-id">
+                          #{job.id}
+                        </span>
+
+                      </div>
+
+                      <hr />
+
+                      {/* DETAILS */}
+
+                      <div className="job-details">
+
+                        <p>
+                          <strong>
+                            📍 Location:
+                          </strong>{" "}
+                          {job.location || "N/A"}
+                        </p>
+
+                        <p>
+                          <strong>
+                            💰 Salary:
+                          </strong>{" "}
+                          {job.salary || "N/A"}
+                        </p>
+
+                        <p>
+                          <strong>
+                            💼 Experience:
+                          </strong>{" "}
+                          {job.experience || "N/A"}
+                        </p>
+
+                        <p>
+                          <strong>
+                            🕒 Job Type:
+                          </strong>{" "}
+                          {job.job_type || "N/A"}
+                        </p>
+
+                        <p>
+                          <strong>
+                            👤 Posted By Admin ID:
+                          </strong>{" "}
+                          {job.admin_id || "N/A"}
+                        </p>
+
+                      </div>
+
+                      {/* SKILLS */}
+
+                      {job.skills && (
+                        <div className="job-skills">
+
+                          {String(job.skills)
+                            .split(",")
                             .map(
-                              (
-                                skill,
-                                index
-                              ) => (
+                              (skill, index) => (
                                 <span
                                   key={index}
-                                  className="badge bg-info text-dark me-1"
+                                  className="skill-badge"
                                 >
                                   {skill.trim()}
                                 </span>
                               )
                             )}
-                        </td>
 
-                        <td>
+                        </div>
+                      )}
 
-                          <div className="d-flex gap-2 justify-content-center">
+                      {/* DESCRIPTION */}
 
-                            <button
-                              className="btn btn-outline-primary btn-sm"
-                              onClick={() =>
-                                editJob(job)
-                              }
-                            >
-                              ✏️ Edit
-                            </button>
+                      {job.description && (
+                        <p className="job-description">
 
-                            <button
-                              className="btn btn-outline-danger btn-sm"
-                              onClick={() =>
-                                deleteJob(
-                                  job.id
-                                )
-                              }
-                            >
-                              🗑 Delete
-                            </button>
+                          {job.description.length > 120
+                            ? `${job.description.substring(
+                                0,
+                                120
+                              )}...`
+                            : job.description}
 
-                          </div>
+                        </p>
+                      )}
 
-                        </td>
+                      {/* ACTION BUTTONS */}
+{/* ACTION BUTTONS */}
 
-                      </tr>
-                    ))
-                  )}
+<div className="job-actions">
 
-                </tbody>
+  <button
+    type="button"
+    className="btn btn-warning btn-sm"
+    onClick={() => handleEdit(job)}
+    disabled={Number(job.admin_id) !== loggedAdminId}
+    title={
+      Number(job.admin_id) !== loggedAdminId
+        ? "You cannot edit another admin's job"
+        : "Edit Job"
+    }
+  >
+    ✏️ Edit
+  </button>
 
-              </table>
+  <button
+    type="button"
+    className="btn btn-danger btn-sm"
+    onClick={() => handleDelete(job)}
+    disabled={Number(job.admin_id) !== loggedAdminId}
+    title={
+      Number(job.admin_id) !== loggedAdminId
+        ? "You cannot delete another admin's job"
+        : "Delete Job"
+    }
+  >
+    🗑️ Delete
+  </button>
+
+</div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              ))}
 
             </div>
 
-          </div>
+          )}
+
         </div>
 
       </div>

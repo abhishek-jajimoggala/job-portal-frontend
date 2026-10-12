@@ -1,13 +1,21 @@
+import React from "react";
 import { Navigate } from "react-router-dom";
 
 function ProtectedRoute({ children }) {
-  const user = JSON.parse(
-    localStorage.getItem("loggedUser")
+  const loggedUser = JSON.parse(
+    sessionStorage.getItem("loggedUser")
   );
 
-  return user
-    ? children
-    : <Navigate to="/login" replace />;
+  if (!loggedUser) {
+    return (
+      <Navigate
+        to="/login"
+        replace
+      />
+    );
+  }
+
+  return children;
 }
 
 export default ProtectedRoute;

@@ -1,0 +1,477 @@
+
+/* =========================================
+   CATEGORIES PAGE
+========================================= */
+
+.categories-page {
+  width: 100%;
+  min-height: 100vh;
+
+  padding: 125px 20px 70px;
+
+  background: #f8fafc;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================
+   MAIN CONTAINER
+========================================= */
+
+.categories-container {
+  width: 100%;
+  max-width: 1400px;
+
+  margin: 0 auto;
+}
+
+
+/* =========================================
+   TITLE SECTION
+========================================= */
+
+.categories-title-section {
+  margin-bottom: 42px;
+
+  text-align: center;
+}
+
+
+.categories-title-badge {
+  display: inline-block;
+
+  margin-bottom: 13px;
+
+  padding: 7px 15px;
+
+  border-radius: 20px;
+
+  background: #eaf1ff;
+
+  color: #2563eb;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+
+.categories-title-section h1 {
+  margin: 0 0 10px;
+
+  color: #0f172a;
+
+  font-size: 34px;
+  font-weight: 700;
+
+  line-height: 1.3;
+}
+
+
+.categories-title-section p {
+  max-width: 650px;
+
+  margin: 0 auto;
+
+  color: #64748b;
+
+  font-size: 15px;
+
+  line-height: 1.6;
+}
+
+
+/* =========================================
+   CATEGORY GRID
+========================================= */
+
+.categories-grid {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 22px;
+}
+
+
+/* =========================================
+   CATEGORY CARD
+========================================= */
+
+.category-card {
+  width: 100%;
+
+  min-width: 0;
+
+  padding: 30px 22px;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+
+  border-radius: 14px;
+
+  text-align: center;
+
+  box-sizing: border-box;
+
+  box-shadow:
+    0 4px 15px rgba(15, 23, 42, 0.05);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+
+.category-card:hover {
+  transform: translateY(-6px);
+
+  border-color: #c7d7ff;
+
+  box-shadow:
+    0 12px 30px rgba(37, 99, 235, 0.12);
+}
+
+
+/* =========================================
+   CATEGORY ICON
+========================================= */
+
+.category-icon {
+  width: 76px;
+  height: 76px;
+
+  margin: 0 auto 20px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  background: #eaf1ff;
+
+  border-radius: 18px;
+
+  font-size: 38px;
+
+  box-sizing: border-box;
+
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease;
+}
+
+
+.category-card:hover .category-icon {
+  transform: scale(1.06);
+
+  background: #dfe9ff;
+}
+
+
+/* =========================================
+   CATEGORY NAME
+========================================= */
+
+.category-card h3 {
+  margin: 0 0 10px;
+
+  color: #0f172a;
+
+  font-size: 19px;
+  font-weight: 700;
+
+  line-height: 1.4;
+}
+
+
+/* =========================================
+   JOB COUNT
+========================================= */
+
+.category-job-count {
+  margin: 0 0 22px;
+
+  color: #64748b;
+
+  font-size: 14px;
+}
+
+
+.category-job-count strong {
+  color: #2563eb;
+
+  font-size: 18px;
+  font-weight: 700;
+}
+
+
+/* =========================================
+   EXPLORE JOBS BUTTON
+========================================= */
+
+.category-explore-btn {
+  width: 100%;
+
+  min-height: 42px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  padding: 9px 15px;
+
+  border-radius: 7px;
+
+  background: #2563eb;
+
+  color: #ffffff;
+
+  text-decoration: none;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  box-sizing: border-box;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.category-explore-btn:hover {
+  background: #1d4ed8;
+
+  color: #ffffff;
+
+  transform: translateY(-1px);
+}
+
+
+.category-explore-btn span {
+  font-size: 17px;
+
+  transition:
+    transform 0.2s ease;
+}
+
+
+.category-explore-btn:hover span {
+  transform: translateX(4px);
+}
+
+
+/* =========================================
+   LOADING / EMPTY MESSAGE
+========================================= */
+
+.categories-message {
+  width: 100%;
+
+  min-height: 280px;
+
+  padding: 50px 20px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+
+  border-radius: 14px;
+
+  text-align: center;
+
+  box-sizing: border-box;
+
+  box-shadow:
+    0 4px 15px rgba(15, 23, 42, 0.05);
+}
+
+
+.categories-message p {
+  margin: 14px 0 0;
+
+  color: #64748b;
+
+  font-size: 14px;
+}
+
+
+/* =========================================
+   LARGE TABLET
+========================================= */
+
+@media (max-width: 1100px) {
+
+  .categories-page {
+    padding-top: 120px;
+  }
+
+
+  .categories-grid {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+
+    gap: 20px;
+  }
+
+}
+
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 850px) {
+
+  .categories-page {
+    padding: 110px 16px 55px;
+  }
+
+
+  .categories-title-section {
+    margin-bottom: 35px;
+  }
+
+
+  .categories-title-section h1 {
+    font-size: 30px;
+  }
+
+
+  .categories-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    gap: 18px;
+  }
+
+
+  .category-card {
+    padding: 27px 20px;
+  }
+
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 560px) {
+
+  .categories-page {
+    padding: 105px 12px 45px;
+  }
+
+
+  .categories-title-section {
+    margin-bottom: 30px;
+  }
+
+
+  .categories-title-badge {
+    padding: 6px 13px;
+
+    font-size: 12px;
+  }
+
+
+  .categories-title-section h1 {
+    font-size: 26px;
+  }
+
+
+  .categories-title-section p {
+    font-size: 14px;
+  }
+
+
+  .categories-grid {
+    grid-template-columns: 1fr;
+
+    gap: 15px;
+  }
+
+
+  .category-card {
+    padding: 25px 20px;
+  }
+
+
+  .category-icon {
+    width: 70px;
+    height: 70px;
+
+    margin-bottom: 17px;
+
+    font-size: 34px;
+  }
+
+
+  .category-card h3 {
+    font-size: 18px;
+  }
+
+}
+
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media (max-width: 400px) {
+
+  .categories-page {
+    padding-top: 100px;
+  }
+
+
+  .categories-title-section h1 {
+    font-size: 24px;
+  }
+
+
+  .categories-title-section p {
+    font-size: 13px;
+  }
+
+
+  .category-card {
+    padding: 23px 17px;
+  }
+
+
+  .category-icon {
+    width: 65px;
+    height: 65px;
+
+    font-size: 31px;
+  }
+
+
+  .category-card h3 {
+    font-size: 17px;
+  }
+
+
+  .category-job-count {
+    font-size: 13px;
+  }
+
+}

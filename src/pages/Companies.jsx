@@ -1,93 +1,260 @@
+
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import jobsData from "../data/jobs";
+import "../styles/Companies.css";
 
 function Companies() {
-  const adminJobs =
-    JSON.parse(localStorage.getItem("adminJobs")) || [];
+  const [companies, setCompanies] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const allJobs = [...jobsData, ...adminJobs];
+  useEffect(() => {
+    fetch("http://localhost:5000/api/jobs", {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === "success") {
+          const companyMap = {};
 
-  const companies = [];
+          data.jobs.forEach((job) => {
+            const companyName =
+              job.company_name || job.company;
 
-  allJobs.forEach((job) => {
-    const existingCompany = companies.find(
-      (company) =>
-        company.name?.toLowerCase() ===
-        job.company?.toLowerCase()
-    );
+            if (!companyName) {
+              return;
+            }
 
-    if (existingCompany) {
-      existingCompany.openings += 1;
-    } else {
-      companies.push({
-        id: companies.length + 1,
-        name: job.company,
-        location: job.location,
-        openings: 1,
+            const cleanCompanyName =
+              companyName.trim();
+
+            if (companyMap[cleanCompanyName]) {
+              companyMap[cleanCompanyName].openings += 1;
+            } else {
+              companyMap[cleanCompanyName] = {
+                id:
+                  Object.keys(companyMap).length + 1,
+
+                name: cleanCompanyName,
+
+                location:
+                  job.location ||
+                  "Multiple Locations",
+
+                openings: 1,
+              };
+            }
+          });
+
+          setCompanies(
+            Object.values(companyMap)
+          );
+        } else {
+          setCompanies([]);
+        }
+
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error(
+          "Error fetching companies:",
+          error
+        );
+
+        setCompanies([]);
+        setLoading(false);
       });
-    }
-  });
+  }, []);
 
   return (
-    <div className="container py-5">
-      <div className="text-center mb-5">
-        <h2 className="fw-bold text-primary">
-          Top Companies Hiring
-        </h2>
+    <div className="companies-page">
 
-        <p className="text-muted">
-          Explore opportunities from leading companies.
-        </p>
-      </div>
+      <div className="companies-container">
 
-      <div className="row g-4">
-        {companies.map((company) => (
-          <div
-            key={company.id}
-            className="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12"
-          >
-            <div className="card company-card shadow border-0 h-100 text-center">
-              <div className="card-body p-4">
+        {/* =====================================================
+            PAGE TITLE
+        ===================================================== */}
 
-                <div
-                  className="rounded-circle bg-primary text-white mx-auto mb-3 d-flex align-items-center justify-content-center"
-                  style={{
-                    width: "70px",
-                    height: "70px",
-                    fontSize: "24px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  {company.name?.charAt(0)}
+        <div className="companies-title-section">
+
+          <span className="companies-title-badge">
+            🏢 Career Opportunities
+          </span>
+
+          <h1>
+            Explore Top Companies
+          </h1>
+
+          <p>
+            Discover exciting job opportunities from
+            leading companies and take the next step
+            in your career.
+          </p>
+
+        </div>
+
+
+        {/* =====================================================
+            HEADER
+        ===================================================== */}
+
+        <div className="companies-header">
+
+          <div>
+
+            <h2>
+              Top Companies Hiring
+            </h2>
+
+            <p>
+              Find your dream job from companies
+              currently hiring.
+            </p>
+
+          </div>
+
+          {!loading &&
+            companies.length > 0 && (
+
+              <div className="companies-count">
+
+                {companies.length}{" "}
+
+                {companies.length === 1
+                  ? "Company"
+                  : "Companies"}
+
+              </div>
+
+            )}
+
+        </div>
+
+
+        {/* =====================================================
+            LOADING
+        ===================================================== */}
+
+        {loading ? (
+
+          <div className="companies-message">
+
+            <div
+              className="spinner-border text-primary"
+              role="status"
+            ></div>
+
+            <p>
+              Loading companies...
+            </p>
+
+          </div>
+
+        ) : companies.length === 0 ? (
+
+          /* ===================================================
+             NO COMPANIES
+          =================================================== */
+
+          <div className="companies-message">
+
+            <div className="companies-empty-icon">
+              🏢
+            </div>
+
+            <h5>
+              No Companies Found
+            </h5>
+
+            <p>
+              Companies will appear here when
+              admin releases jobs.
+            </p>
+
+          </div>
+
+        ) : (
+
+          /* ===================================================
+             COMPANY CARDS
+          =================================================== */
+
+          <div className="companies-grid">
+
+            {companies.map((company) => (
+
+              <div
+                className="company-card"
+                key={company.id}
+              >
+
+                {/* Company Logo */}
+
+                <div className="company-logo">
+
+                  {company.name
+                    ?.charAt(0)
+                    .toUpperCase()}
+
                 </div>
 
-                <h5 className="fw-bold">
+
+                {/* Company Name */}
+
+                <h3>
                   {company.name}
-                </h5>
+                </h3>
 
-                <p className="text-muted mb-2">
-                  📍 {company.location}
+
+                {/* Location */}
+
+                <p className="company-location">
+
+                  <span>
+                    📍
+                  </span>
+
+                  {company.location}
+
                 </p>
 
-                <p className="mb-3">
-                  <strong>{company.openings}</strong>{" "}
-                  Open Positions
+
+                {/* Openings */}
+
+                <p className="company-openings">
+
+                  <strong>
+                    {company.openings}
+                  </strong>{" "}
+
+                  {company.openings === 1
+                    ? "Open Position"
+                    : "Open Positions"}
+
                 </p>
+
+
+                {/* View Jobs */}
 
                 <Link
-                  to={`/jobs?keyword=${encodeURIComponent(
+                  to={`/jobs?company=${encodeURIComponent(
                     company.name
                   )}`}
-                  className="btn btn-primary w-100"
+                  className="view-jobs-btn"
                 >
                   View Jobs
+                  <span>→</span>
                 </Link>
 
               </div>
-            </div>
+
+            ))}
+
           </div>
-        ))}
+
+        )}
+
       </div>
+
     </div>
   );
 }

@@ -1,99 +1,481 @@
-/* =========================
+
+/* =========================================================
    NAVBAR
-========================= */
+========================================================= */
 
-.navbar{
-  position:sticky;
-  top:0;
-  z-index:9999;
-  padding:12px 20px;
+.navbar {
+  width: 100%;
+  min-height: 64px;
+  z-index: 1050;
 }
 
-.navbar-brand{
-  font-size:1.6rem;
-  font-weight:700;
+.navbar-brand {
+  font-size: 1.25rem;
+  white-space: nowrap;
 }
 
-/* Center Nav Links */
-.navbar-nav{
-  margin:0 auto;
-  gap:10px;
+.navbar .nav-link {
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 500;
+  padding: 8px 14px;
+  transition: all 0.2s ease;
 }
 
-.nav-link{
-  font-weight:500;
-  padding:8px 14px !important;
-  transition:0.3s;
+.navbar .nav-link:hover {
+  color: #ffffff;
+  opacity: 0.85;
 }
 
-.nav-link:hover{
-  color:#ffd54f !important;
+.navbar .nav-link:focus {
+  color: #ffffff;
 }
 
-/* Dropdown */
 
-.dropdown-menu{
-  min-width:220px;
-  border:none;
-  border-radius:12px;
-  box-shadow:0 10px 25px rgba(0,0,0,.15);
-  z-index:99999;
+/* =========================================================
+   MOBILE 3 BARS
+========================================================= */
+
+.navbar-toggler {
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 6px 9px;
+  border-radius: 6px;
+  box-shadow: none !important;
 }
 
-.dropdown-item{
-  padding:10px 15px;
+.navbar-toggler:focus {
+  box-shadow: none !important;
 }
 
-/* =========================
+.navbar-toggler-icon {
+  width: 1.4em;
+  height: 1.4em;
+}
+
+
+/* =========================================================
+   CUSTOM NAVBAR
+========================================================= */
+
+.custom-navbar-collapse {
+  display: flex;
+  flex-basis: auto;
+  align-items: center;
+  width: auto;
+}
+
+
+/* =========================================================
+   NAVIGATION LINKS
+========================================================= */
+
+.custom-navbar-collapse .navbar-nav {
+  display: flex;
+  align-items: center;
+}
+
+.custom-navbar-collapse .nav-item {
+  display: flex;
+  align-items: center;
+}
+
+
+/* =========================================================
+   RIGHT SIDE BUTTONS
+========================================================= */
+
+.custom-navbar-collapse > .d-flex {
+  align-items: center;
+}
+
+.custom-navbar-collapse > .d-flex .btn {
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   PROFILE DROPDOWN
+========================================================= */
+
+.navbar .position-relative {
+  position: relative;
+}
+
+.navbar .dropdown-menu {
+  min-width: 190px;
+  margin-top: 8px;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 0;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  z-index: 2000;
+}
+
+.navbar .dropdown-item {
+  padding: 9px 16px;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.navbar .dropdown-item:hover {
+  background-color: #f1f4f8;
+}
+
+.navbar .dropdown-item.text-danger:hover {
+  background-color: #fff0f0;
+}
+
+.navbar .dropdown-divider {
+  margin: 6px 0;
+}
+
+
+/* =========================================================
+   DESKTOP
+========================================================= */
+
+@media (min-width: 992px) {
+
+  .custom-navbar-collapse {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+  }
+
+  /* Main links center */
+  .custom-navbar-collapse .navbar-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 0 auto !important;
+  }
+
+  .custom-navbar-collapse .nav-item {
+    display: flex;
+    align-items: center;
+  }
+
+  .custom-navbar-collapse > .d-flex {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center;
+    margin-left: auto;
+  }
+
+  .navbar .position-relative {
+    margin-left: 10px;
+  }
+}
+
+
+/* =========================================================
    MOBILE
-========================= */
+========================================================= */
 
-@media(max-width:991px){
+@media (max-width: 991.98px) {
 
-  .navbar-nav{
-    margin-top:15px;
-    text-align:center;
+  /* CLOSED */
+  .custom-navbar-collapse {
+    display: none !important;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 12px;
+    padding-bottom: 12px;
   }
 
-  .navbar .d-flex{
-    flex-direction:column;
-    width:100%;
-    margin-top:15px;
-    gap:10px;
+
+  /* OPEN */
+  .custom-navbar-collapse.mobile-menu-open {
+    display: flex !important;
+    align-items: center;
   }
 
-  .navbar .btn{
-    width:100%;
+
+  /* =======================================================
+     MOBILE LINKS
+  ======================================================= */
+
+  .custom-navbar-collapse .navbar-nav {
+    width: 100%;
+    margin: 0 !important;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
   }
 
-  .position-relative{
-    width:100%;
-    margin-top:15px;
+  .custom-navbar-collapse .nav-item {
+    width: 100%;
+    display: flex;
+    justify-content: center;
   }
 
-  .position-relative .btn{
-    width:100%;
+  .custom-navbar-collapse .nav-link {
+    width: auto;
+    min-width: 150px;
+    text-align: center;
+    display: block;
+    padding: 11px 20px;
+    border-radius: 6px;
   }
 
+  .custom-navbar-collapse .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+
+
+  /* =======================================================
+     RIGHT SIDE BUTTONS
+  ======================================================= */
+
+  .custom-navbar-collapse > .d-flex {
+    width: 100%;
+    margin-top: 14px;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+  }
+
+  .custom-navbar-collapse > .d-flex .btn {
+    width: 180px;
+    text-align: center;
+  }
+
+
+  /* =======================================================
+     USER PROFILE AREA
+  ======================================================= */
+
+  .custom-navbar-collapse .position-relative {
+    width: 100%;
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .custom-navbar-collapse .position-relative > .btn {
+    width: 180px;
+    text-align: center;
+  }
+
+
+  /* =======================================================
+     MOBILE DROPDOWN
+  ======================================================= */
+
+  .navbar .dropdown-menu {
+    position: static !important;
+    width: 180px;
+    min-width: 180px;
+    margin: 8px auto 0 !important;
+    padding: 5px 0;
+    border-radius: 8px;
+    box-shadow: none;
+    text-align: center;
+  }
+
+  .navbar .dropdown-item {
+    padding: 10px 12px;
+    text-align: center;
+  }
+
+  .navbar .dropdown-divider {
+    margin: 5px 0;
+  }
 }
-.navbar-nav{
-  gap:10px;
-}
 
-.nav-link{
-  font-size:16px;
-  font-weight:500;
-}
 
-@media(max-width:991px){
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
 
-  .navbar-nav{
-    margin-top:15px;
-    text-align:center;
+@media (max-width: 575.98px) {
+
+  .navbar {
+    min-height: 60px;
   }
 
-  .navbar-nav .nav-item{
-    margin-bottom:5px;
+  .container-fluid {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .navbar-brand {
+    font-size: 1.1rem;
+  }
+
+  .navbar-toggler {
+    padding: 5px 8px;
+  }
+
+  .custom-navbar-collapse {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .custom-navbar-collapse .navbar-nav {
+    gap: 5px;
+  }
+
+  .custom-navbar-collapse .nav-link {
+    min-width: 160px;
+    padding: 10px 20px;
+  }
+}
+
+
+/* =========================================
+   LOGIN / ADMIN LOGIN / REGISTER
+========================================= */
+
+.navbar-login-btn {
+  background: #ffffff !important;
+  color: #2563eb !important;
+
+  border: 1px solid #ffffff !important;
+
+  font-weight: 600;
+
+  padding: 7px 17px;
+
+  border-radius: 7px;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.navbar-login-btn:hover {
+  background: #eaf1ff !important;
+  color: #1d4ed8 !important;
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================================
+   ADMIN LOGIN
+========================================= */
+
+.navbar-admin-login-btn {
+  background: #f59e0b !important;
+  color: #ffffff !important;
+
+  border: 1px solid #f59e0b !important;
+
+  font-weight: 600;
+
+  padding: 7px 17px;
+
+  border-radius: 7px;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.navbar-admin-login-btn:hover {
+  background: #d97706 !important;
+  border-color: #d97706 !important;
+
+  color: #ffffff !important;
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================================
+   REGISTER
+========================================= */
+
+.navbar-register-btn {
+  background: #198754 !important;
+  color: #ffffff !important;
+
+  border: 1px solid #198754 !important;
+
+  font-weight: 600;
+
+  padding: 7px 17px;
+
+  border-radius: 7px;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.navbar-register-btn:hover {
+  background: #157347 !important;
+  border-color: #157347 !important;
+
+  color: #ffffff !important;
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================================
+   BUTTON SPACING
+========================================= */
+
+.navbar-actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 991.98px) {
+
+  .navbar-actions {
+    width: 100%;
+
+    margin-top: 14px;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    gap: 10px !important;
+  }
+
+
+  .navbar-login-btn,
+  .navbar-admin-login-btn,
+  .navbar-register-btn {
+    width: 190px;
+
+    min-height: 42px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
   }
 
 }

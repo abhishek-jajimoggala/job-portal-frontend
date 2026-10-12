@@ -1,20 +1,30 @@
+import React from "react";
+
 function FilterSidebar({
   location,
   setLocation,
   experience,
-  setExperience
+  setExperience,
+  salary,
+  setSalary,
 }) {
+  const clearFilters = () => {
+    setLocation("");
+    setExperience("");
+    setSalary("");
+  };
+
   return (
     <div className="card shadow-sm border-0">
-
       <div className="card-body">
 
-        <h5 className="fw-bold mb-3">
-          Filters
+        <h5 className="fw-bold mb-4">
+          🔍 Filters
         </h5>
 
+        {/* Location */}
         <div className="mb-3">
-          <label className="form-label">
+          <label className="form-label fw-semibold">
             Location
           </label>
 
@@ -29,8 +39,9 @@ function FilterSidebar({
           />
         </div>
 
+        {/* Experience */}
         <div className="mb-3">
-          <label className="form-label">
+          <label className="form-label fw-semibold">
             Experience
           </label>
 
@@ -42,7 +53,11 @@ function FilterSidebar({
             }
           >
             <option value="">
-              All
+              All Experience
+            </option>
+
+            <option value="0">
+              Fresher
             </option>
 
             <option value="1">
@@ -57,11 +72,60 @@ function FilterSidebar({
               3+ Years
             </option>
 
+            <option value="5">
+              5+ Years
+            </option>
           </select>
         </div>
 
-      </div>
+        {/* Salary */}
+        <div className="mb-3">
+          <label className="form-label fw-semibold">
+            Salary
+          </label>
 
+          <select
+            className="form-select"
+            value={salary}
+            onChange={(e) =>
+              setSalary(e.target.value)
+            }
+          >
+            <option value="">
+              All Salaries
+            </option>
+
+            <option value="300000">
+              3 LPA+
+            </option>
+
+            <option value="500000">
+              5 LPA+
+            </option>
+
+            <option value="800000">
+              8 LPA+
+            </option>
+
+            <option value="1000000">
+              10 LPA+
+            </option>
+
+            <option value="1500000">
+              15 LPA+
+            </option>
+          </select>
+        </div>
+
+        {/* Clear Filters */}
+        <button
+          className="btn btn-outline-secondary w-100"
+          onClick={clearFilters}
+        >
+          Clear Filters
+        </button>
+
+      </div>
     </div>
   );
 }

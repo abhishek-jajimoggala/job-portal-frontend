@@ -1,13 +1,20 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import axios from "axios";
+import "../styles/Profile.css";
+
+import {
+  Country,
+  State,
+  City,
+} from "country-state-city";
 
 function Profile() {
+  const [loading, setLoading] = useState(true);
   const [isEdit, setIsEdit] = useState(false);
-  const navigate = useNavigate();
 
-  const emptyUser = {
-    name: "",
+  const [user, setUser] = useState({
+    username: "",
     email: "",
     phone: "",
     country: "",
@@ -19,710 +26,1002 @@ function Profile() {
     degree: "",
     college: "",
     branch: "",
-    passoutYear: "",
+    passout_year: "",
     experience: "",
     linkedin: "",
     github: "",
-    resume: "",
-    resumeName: "",
-  };
+    profile_image: "",
+    resume_path: "",
+  });
 
-  const [user, setUser] = useState(emptyUser);
+  /* =========================================
+     LOAD PROFILE
+  ========================================= */
 
-  const states = [
-    "Andhra Pradesh",
-    "Telangana",
-    "Tamil Nadu",
-    "Karnataka",
-    "Kerala",
-    "Maharashtra",
-    "Delhi",
-  ];
-
-  const cities = {
-    "Andhra Pradesh": [
-      "Vijayawada",
-      "Guntur",
-      "Visakhapatnam",
-      "Tirupati",
-    ],
-    Telangana: ["Hyderabad", "Warangal", "Karimnagar"],
-    "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai"],
-    Karnataka: ["Bangalore", "Mysore", "Hubli"],
-    Kerala: ["Kochi", "Trivandrum", "Kozhikode"],
-    Maharashtra: ["Mumbai", "Pune", "Nagpur"],
-    Delhi: ["New Delhi", "Dwarka", "Rohini"],
-  };
-
-  // Load the currently logged-in user's profile
   useEffect(() => {
+    loadProfile();
+  }, []);
+
+  const loadProfile = async () => {
     try {
-      const loggedUser =
-        JSON.parse(localStorage.getItem("loggedUser")) || {};
+      const userId = sessionStorage.getItem("userId");
+
+      if (!userId) {
+        toast.error("User ID not found. Please login again.");
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.get(
+        `http://localhost:5000/api/profile/${userId}`
+      );
+
+      const profile = response.data.user;
 
       setUser({
-        ...emptyUser,
-        ...loggedUser,
+        username: profile?.username || "",
+        email: profile?.email || "",
+        phone: profile?.phone || "",
+        country: profile?.country || "",
+        state: profile?.state || "",
+        city: profile?.city || "",
+        skills: profile?.skills || "",
+        tenth: profile?.tenth || "",
+        intermediate: profile?.intermediate || "",
+        degree: profile?.degree || "",
+        college: profile?.college || "",
+        branch: profile?.branch || "",
+        passout_year: profile?.passout_year || "",
+        experience: profile?.experience || "",
+        linkedin: profile?.linkedin || "",
+        github: profile?.github || "",
+        profile_image: profile?.profile_image || "",
+        resume_path: profile?.resume_path || "",
       });
     } catch (error) {
-      console.error("Unable to load profile:", error);
-      setUser(emptyUser);
+      console.error(
+        "LOAD PROFILE ERROR:",
+        error.response?.data || error
+      );
+
+      toast.error(
+        error.response?.data?.message ||
+          "Failed To Load Profile"
+      );
+    } finally {
+      setLoading(false);
     }
-  }, []);
+  };
+
+  /* =========================================
+     HANDLE INPUT CHANGE
+  ========================================= */
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    setUser((prev) => ({
-      ...prev,
-      [name]: value,
-      // Clear city when state changes
-      ...(name === "state" ? { city: "" } : {}),
-    }));
-  };
-
-  const handleResumeChange = (e) => {
-    const file = e.target.files?.[0];
-
-    if (!file) return;
-
-    const allowedTypes = [
-      "application/pdf",
-      "application/msword",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    ];
-
-    if (!allowedTypes.includes(file.type)) {
-      toast.warning("Please upload only PDF, DOC, or DOCX files.");
-      e.target.value = "";
-      return;
-    }
-
-    // localStorage has limited storage. Large resumes can exceed it.
-    const maxSize = 2 * 1024 * 1024;
-
-    if (file.size > maxSize) {
-      toast.warning("Resume size should be less than 2 MB.");
-      e.target.value = "";
-      return;
-    }
-
-    const reader = new FileReader();
-
-    reader.onload = () => {
+    if (name === "country") {
       setUser((prev) => ({
         ...prev,
-        resume: reader.result,
-        resumeName: file.name,
+        country: value,
+        state: "",
+        city: "",
       }));
-    };
-
-    reader.onerror = () => {
-      alert("Unable to read the resume file.");
-    };
-
-    reader.readAsDataURL(file);
-  };
-
-  const saveProfile = () => {
-    if (!user.name.trim()) {
-      toast.warning("Please enter your name.");
-      return;
-    }
-
-    if (!user.email.trim()) {
-      toast.warning("Please enter your email.");
-      return;
-    }
-
-    // Save currently logged-in user
-    localStorage.setItem("loggedUser", JSON.stringify(user));
-
-    // Update the same user in users array
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-
-    const existingUserIndex = users.findIndex(
-      (item) =>
-        item.email?.toLowerCase() === user.email.trim().toLowerCase()
-    );
-
-    if (existingUserIndex !== -1) {
-      users[existingUserIndex] = {
-        ...users[existingUserIndex],
-        ...user,
-      };
+    } else if (name === "state") {
+      setUser((prev) => ({
+        ...prev,
+        state: value,
+        city: "",
+      }));
     } else {
-      users.push(user);
+      setUser((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
     }
-
-    localStorage.setItem("users", JSON.stringify(users));
-
-    toast.success("Profile Updated Successfully");
-    setIsEdit(false);
   };
 
-  const cancelEdit = () => {
+  /* =========================================
+     SAVE PROFILE
+  ========================================= */
+
+  const saveProfile = async () => {
     try {
-      const loggedUser =
-        JSON.parse(localStorage.getItem("loggedUser")) || {};
+      const userId = sessionStorage.getItem("userId");
 
-      setUser({
-        ...emptyUser,
-        ...loggedUser,
-      });
+      if (!userId) {
+        toast.error("User ID not found. Please login again.");
+        return;
+      }
+
+      await axios.put(
+        `http://localhost:5000/api/profile/${userId}`,
+        user
+      );
+
+      toast.success("Profile Updated Successfully");
+
+      setIsEdit(false);
+
+      await loadProfile();
     } catch (error) {
-      setUser(emptyUser);
+      console.error(
+        "UPDATE PROFILE ERROR:",
+        error.response?.data || error
+      );
+
+      toast.error(
+        error.response?.data?.message ||
+          "Profile Update Failed"
+      );
+    }
+  };
+
+  /* =========================================
+     UPLOAD PROFILE IMAGE
+  ========================================= */
+
+  const uploadProfileImage = async (e) => {
+    const file = e.target.files[0];
+
+    if (!file) {
+      return;
     }
 
-    setIsEdit(false);
+    try {
+      const userId = sessionStorage.getItem("userId");
+
+      if (!userId) {
+        toast.error("User ID not found. Please login again.");
+        return;
+      }
+
+      const formData = new FormData();
+
+      // Backend expects "image"
+      formData.append("image", file);
+
+      const response = await axios.post(
+        `http://localhost:5000/api/profile/${userId}/image`,
+        formData
+      );
+
+      setUser((prev) => ({
+        ...prev,
+        profile_image: response.data.image_url,
+      }));
+
+      toast.success(
+        "Profile Image Uploaded Successfully"
+      );
+    } catch (error) {
+      console.error(
+        "IMAGE UPLOAD ERROR:",
+        error.response?.data || error
+      );
+
+      toast.error(
+        error.response?.data?.message ||
+          "Image Upload Failed"
+      );
+    }
   };
 
-  const hasLink = (value) => {
-    return value && value.trim() !== "";
+  /* =========================================
+     UPLOAD RESUME
+  ========================================= */
+
+  const uploadResume = async (e) => {
+    const file = e.target.files[0];
+
+    if (!file) {
+      return;
+    }
+
+    try {
+      const userId = sessionStorage.getItem("userId");
+
+      if (!userId) {
+        toast.error("User ID not found. Please login again.");
+        return;
+      }
+
+      const formData = new FormData();
+
+      // Backend expects "resume"
+      formData.append("resume", file);
+
+      const response = await axios.post(
+        `http://localhost:5000/api/profile/${userId}/resume`,
+        formData
+      );
+
+      setUser((prev) => ({
+        ...prev,
+        resume_path: response.data.resume_url,
+      }));
+
+      toast.success(
+        "Resume Uploaded Successfully"
+      );
+    } catch (error) {
+      console.error(
+        "RESUME UPLOAD ERROR:",
+        error.response?.data || error
+      );
+
+      toast.error(
+        error.response?.data?.message ||
+          "Resume Upload Failed"
+      );
+    }
   };
+
+  /* =========================================
+     LOADING
+  ========================================= */
+
+  if (loading) {
+    return (
+      <div className="profile-loading">
+        <div className="loading-spinner"></div>
+        <p>Loading Profile...</p>
+      </div>
+    );
+  }
+
+  /* =========================================
+     IMAGE URL
+  ========================================= */
+
+  const profileImageUrl = user.profile_image
+    ? `http://localhost:5000/${user.profile_image.replace(
+        /\\/g,
+        "/"
+      )}`
+    : "https://ui-avatars.com/api/?name=User&background=2563eb&color=fff";
+
+  /* =========================================
+     RESUME URL
+  ========================================= */
+
+  const resumeUrl = user.resume_path
+    ? `http://localhost:5000/${user.resume_path.replace(
+        /\\/g,
+        "/"
+      )}`
+    : "";
+
+  /* =========================================
+     EXTERNAL LINK URL
+  ========================================= */
+
+  const getExternalUrl = (url) => {
+    if (!url) {
+      return "#";
+    }
+
+    if (
+      url.startsWith("http://") ||
+      url.startsWith("https://")
+    ) {
+      return url;
+    }
+
+    return `https://${url}`;
+  };
+
+  /* =========================================
+     COUNTRY NAME
+  ========================================= */
+
+  const countryName =
+    Country.getCountryByCode(user.country)?.name ||
+    user.country ||
+    "Not provided";
+
+  /* =========================================
+     STATE NAME
+  ========================================= */
+
+  const stateName =
+    State.getStateByCodeAndCountry(
+      user.state,
+      user.country
+    )?.name ||
+    user.state ||
+    "Not provided";
+
+  /* =========================================
+     UI
+  ========================================= */
 
   return (
-    <div className="container py-4 py-md-5">
-      <div className="card shadow-lg border-0 rounded-4">
-        <div className="card-body p-3 p-md-5">
-          <div className="text-center mb-4">
-            <h2 className="text-primary fw-bold mb-2">
-              👤 My Profile
+    <div className="profile-page">
+
+      <div className="profile-container">
+
+        {/* =====================================
+            MAIN CARD
+        ===================================== */}
+
+        <div className="profile-main-card">
+
+          {/* COVER */}
+          <div className="profile-cover"></div>
+
+          {/* PROFILE HEADER */}
+          <div className="profile-header">
+
+            <div className="profile-image-wrapper">
+
+              <img
+                src={profileImageUrl}
+                alt="Profile"
+                className="profile-photo"
+              />
+
+              {isEdit && (
+                <label className="image-edit-button">
+                  📷
+                  <input
+                    type="file"
+                    accept=".jpg,.jpeg,.png,.webp"
+                    onChange={uploadProfileImage}
+                  />
+                </label>
+              )}
+
+            </div>
+
+            <h2>
+              {user.username || "User"}
             </h2>
-            <p className="text-muted mb-0">
-              Manage your personal, education and professional details
+
+            <p className="profile-email">
+              {user.email}
             </p>
+
           </div>
-          <button
-  className="btn btn-secondary mb-3 w-100 w-md-auto"
-  onClick={() => navigate("/")}
->
-  ← Back To Home
-</button>
 
-          {isEdit ? (
+          {/* =====================================
+              VIEW MODE
+          ===================================== */}
+
+          {!isEdit ? (
             <>
-              <div className="row g-3">
-                <div className="col-md-6">
-                  <label className="form-label fw-semibold">
-                    Name
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    className="form-control"
-                    value={user.name}
-                    onChange={handleChange}
-                    placeholder="Enter your full name"
-                  />
+
+              {/* PERSONAL DETAILS */}
+
+              <div className="profile-section">
+
+                <h5>Personal Details</h5>
+
+                <div className="details-grid">
+
+                  <div className="detail-item">
+                    <span>Phone</span>
+                    <strong>
+                      {user.phone || "Not provided"}
+                    </strong>
+                  </div>
+
+                  <div className="detail-item">
+                    <span>Country</span>
+                    <strong>
+                      {countryName}
+                    </strong>
+                  </div>
+
+                  <div className="detail-item">
+                    <span>State</span>
+                    <strong>
+                      {stateName}
+                    </strong>
+                  </div>
+
+                  <div className="detail-item">
+                    <span>City</span>
+                    <strong>
+                      {user.city || "Not provided"}
+                    </strong>
+                  </div>
+
                 </div>
 
-                <div className="col-md-6">
-                  <label className="form-label fw-semibold">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    className="form-control"
-                    value={user.email}
-                    onChange={handleChange}
-                    placeholder="Enter your email"
-                  />
+              </div>
+
+              {/* EDUCATION */}
+
+              <div className="profile-section">
+
+                <h5>Education & Experience</h5>
+
+                <div className="details-grid">
+
+                  <div className="detail-item">
+                    <span>10th</span>
+                    <strong>
+                      {user.tenth || "Not provided"}
+                    </strong>
+                  </div>
+
+                  <div className="detail-item">
+                    <span>Intermediate</span>
+                    <strong>
+                      {user.intermediate ||
+                        "Not provided"}
+                    </strong>
+                  </div>
+
+                  <div className="detail-item">
+                    <span>Degree</span>
+                    <strong>
+                      {user.degree || "Not provided"}
+                    </strong>
+                  </div>
+
+                  <div className="detail-item">
+                    <span>College</span>
+                    <strong>
+                      {user.college || "Not provided"}
+                    </strong>
+                  </div>
+
+                  <div className="detail-item">
+                    <span>Branch</span>
+                    <strong>
+                      {user.branch || "Not provided"}
+                    </strong>
+                  </div>
+
+                  <div className="detail-item">
+                    <span>Passout Year</span>
+                    <strong>
+                      {user.passout_year ||
+                        "Not provided"}
+                    </strong>
+                  </div>
+
+                  <div className="detail-item">
+                    <span>Experience</span>
+                    <strong>
+                      {user.experience ||
+                        "Not provided"}
+                    </strong>
+                  </div>
+
                 </div>
 
-                <div className="col-md-6">
-                  <label className="form-label fw-semibold">
-                    Phone
-                  </label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    className="form-control"
-                    value={user.phone}
-                    onChange={handleChange}
-                    placeholder="Enter phone number"
-                  />
+              </div>
+
+              {/* SKILLS */}
+
+              <div className="profile-section">
+
+                <h5>Skills</h5>
+
+                {user.skills ? (
+                  <div className="skills-box">
+
+                    {user.skills
+                      .split(",")
+                      .map((skill, index) => (
+                        <span
+                          key={index}
+                          className="skill-item"
+                        >
+                          {skill.trim()}
+                        </span>
+                      ))}
+
+                  </div>
+                ) : (
+                  <p className="empty-text">
+                    No skills added
+                  </p>
+                )}
+
+              </div>
+
+              {/* RESUME & LINKS */}
+
+              <div className="profile-section">
+
+                <h5>Resume & Links</h5>
+
+                <div className="profile-links">
+
+                  {/* LINKEDIN */}
+
+                  {user.linkedin && (
+                    <a
+                      href={getExternalUrl(
+                        user.linkedin
+                      )}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="linkedin-btn"
+                    >
+                      LinkedIn
+                    </a>
+                  )}
+
+                  {/* GITHUB */}
+
+                  {user.github && (
+                    <a
+                      href={getExternalUrl(
+                        user.github
+                      )}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="github-btn"
+                    >
+                      GitHub
+                    </a>
+                  )}
+
+                  {/* RESUME */}
+
+                  {user.resume_path && (
+                    <a
+                      href={resumeUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="resume-btn"
+                    >
+                      View Resume
+                    </a>
+                  )}
+
                 </div>
 
-                <div className="col-md-6">
-                  <label className="form-label fw-semibold">
-                    Country
-                  </label>
-                  <input
-                    type="text"
-                    name="country"
-                    className="form-control"
-                    value={user.country}
-                    onChange={handleChange}
-                    placeholder="India"
-                  />
-                </div>
+                {!user.linkedin &&
+                  !user.github &&
+                  !user.resume_path && (
+                    <p className="empty-text">
+                      No resume or links added
+                    </p>
+                  )}
 
-                <div className="col-md-6">
-                  <label className="form-label fw-semibold">
-                    State
-                  </label>
-                  <select
-                    name="state"
-                    className="form-select"
-                    value={user.state}
-                    onChange={handleChange}
-                  >
-                    <option value="">Select State</option>
+              </div>
 
-                    {states.map((state) => (
-                      <option key={state} value={state}>
-                        {state}
+              {/* EDIT BUTTON */}
+
+              <div className="profile-action-area">
+
+                <button
+                  className="edit-profile-btn"
+                  onClick={() =>
+                    setIsEdit(true)
+                  }
+                >
+                  Edit Profile
+                </button>
+
+              </div>
+
+            </>
+          ) : (
+
+            /* =====================================
+               EDIT MODE
+            ===================================== */
+
+            <div className="edit-profile-area">
+
+              {/* BASIC DETAILS */}
+
+              <div className="profile-section">
+
+                <h5>Personal Details</h5>
+
+                <div className="form-grid">
+
+                  {/* NAME */}
+
+                  <div className="form-group">
+
+                    <label>Name</label>
+
+                    <input
+                      type="text"
+                      name="username"
+                      value={user.username}
+                      onChange={handleChange}
+                      placeholder="Enter name"
+                    />
+
+                  </div>
+
+                  {/* PHONE */}
+
+                  <div className="form-group">
+
+                    <label>Phone</label>
+
+                    <input
+                      type="text"
+                      name="phone"
+                      value={user.phone}
+                      onChange={handleChange}
+                      placeholder="Enter phone number"
+                    />
+
+                  </div>
+
+                  {/* COUNTRY */}
+
+                  <div className="form-group">
+
+                    <label>Country</label>
+
+                    <select
+                      name="country"
+                      value={user.country}
+                      onChange={handleChange}
+                    >
+
+                      <option value="">
+                        Select Country
                       </option>
-                    ))}
-                  </select>
-                </div>
 
-                <div className="col-md-6">
-                  <label className="form-label fw-semibold">
-                    City
-                  </label>
-                  <select
-                    name="city"
-                    className="form-select"
-                    value={user.city}
-                    onChange={handleChange}
-                    disabled={!user.state}
-                  >
-                    <option value="">Select City</option>
+                      {Country.getAllCountries().map(
+                        (country) => (
+                          <option
+                            key={country.isoCode}
+                            value={country.isoCode}
+                          >
+                            {country.name}
+                          </option>
+                        )
+                      )}
 
-                    {(cities[user.state] || []).map((city) => (
-                      <option key={city} value={city}>
-                        {city}
+                    </select>
+
+                  </div>
+
+                  {/* STATE */}
+
+                  <div className="form-group">
+
+                    <label>State</label>
+
+                    <select
+                      name="state"
+                      value={user.state}
+                      onChange={handleChange}
+                      disabled={!user.country}
+                    >
+
+                      <option value="">
+                        Select State
                       </option>
-                    ))}
-                  </select>
+
+                      {user.country &&
+                        State.getStatesOfCountry(
+                          user.country
+                        ).map((state) => (
+                          <option
+                            key={state.isoCode}
+                            value={state.isoCode}
+                          >
+                            {state.name}
+                          </option>
+                        ))}
+
+                    </select>
+
+                  </div>
+
+                  {/* CITY */}
+
+                  <div className="form-group">
+
+                    <label>City</label>
+
+                    <select
+                      name="city"
+                      value={user.city}
+                      onChange={handleChange}
+                      disabled={
+                        !user.country ||
+                        !user.state
+                      }
+                    >
+
+                      <option value="">
+                        Select City
+                      </option>
+
+                      {user.country &&
+                        user.state &&
+                        City.getCitiesOfState(
+                          user.country,
+                          user.state
+                        ).map((city, index) => (
+                          <option
+                            key={`${city.name}-${index}`}
+                            value={city.name}
+                          >
+                            {city.name}
+                          </option>
+                        ))}
+
+                    </select>
+
+                  </div>
+
                 </div>
 
-                <div className="col-md-6">
-                  <label className="form-label fw-semibold">
-                    College
-                  </label>
-                  <input
-                    type="text"
-                    name="college"
-                    className="form-control"
-                    value={user.college}
-                    onChange={handleChange}
-                    placeholder="Enter college name"
-                  />
-                </div>
+              </div>
 
-                <div className="col-md-6">
-                  <label className="form-label fw-semibold">
-                    Branch
-                  </label>
-                  <input
-                    type="text"
-                    name="branch"
-                    className="form-control"
-                    value={user.branch}
-                    onChange={handleChange}
-                    placeholder="Example: CSE"
-                  />
-                </div>
+              {/* PROFILE IMAGE */}
 
-                <div className="col-md-6">
-                  <label className="form-label fw-semibold">
-                    Passout Year
-                  </label>
-                  <input
-                    type="number"
-                    name="passoutYear"
-                    className="form-control"
-                    value={user.passoutYear}
-                    onChange={handleChange}
-                    placeholder="Example: 2026"
-                    min="1950"
-                    max="2100"
-                  />
-                </div>
+              <div className="profile-section">
 
-                <div className="col-md-6">
-                  <label className="form-label fw-semibold">
-                    Experience
-                  </label>
-                  <input
-                    type="text"
-                    name="experience"
-                    className="form-control"
-                    value={user.experience}
-                    onChange={handleChange}
-                    placeholder="Example: Fresher / 1 Year"
-                  />
-                </div>
+                <h5>Profile Image</h5>
 
-                <div className="col-md-4">
-                  <label className="form-label fw-semibold">
-                    10th %
-                  </label>
-                  <input
-                    type="text"
-                    name="tenth"
-                    className="form-control"
-                    value={user.tenth}
-                    onChange={handleChange}
-                    placeholder="Example: 98%"
-                  />
-                </div>
-
-                <div className="col-md-4">
-                  <label className="form-label fw-semibold">
-                    Intermediate %
-                  </label>
-                  <input
-                    type="text"
-                    name="intermediate"
-                    className="form-control"
-                    value={user.intermediate}
-                    onChange={handleChange}
-                    placeholder="Example: 71%"
-                  />
-                </div>
-
-                <div className="col-md-4">
-                  <label className="form-label fw-semibold">
-                    Degree / CGPA
-                  </label>
-                  <input
-                    type="text"
-                    name="degree"
-                    className="form-control"
-                    value={user.degree}
-                    onChange={handleChange}
-                    placeholder="Example: 7.9 CGPA"
-                  />
-                </div>
-
-                <div className="col-md-6">
-                  <label className="form-label fw-semibold">
-                    LinkedIn
-                  </label>
-                  <input
-                    type="url"
-                    name="linkedin"
-                    className="form-control"
-                    value={user.linkedin}
-                    onChange={handleChange}
-                    placeholder="https://linkedin.com/in/yourprofile"
-                  />
-                </div>
-
-                <div className="col-md-6">
-                  <label className="form-label fw-semibold">
-                    GitHub
-                  </label>
-                  <input
-                    type="url"
-                    name="github"
-                    className="form-control"
-                    value={user.github}
-                    onChange={handleChange}
-                    placeholder="https://github.com/yourusername"
-                  />
-                </div>
-
-                <div className="col-12">
-                  <label className="form-label fw-semibold">
-                    Skills
-                  </label>
-                  <textarea
-                    rows="3"
-                    name="skills"
-                    className="form-control"
-                    value={user.skills}
-                    onChange={handleChange}
-                    placeholder="React, JavaScript, Python, SQL"
-                  />
-                  <small className="text-muted">
-                    Separate skills with commas.
-                  </small>
-                </div>
-
-                <div className="col-12 col-md-6">
-                  <label className="form-label fw-semibold">
-                    Upload Resume
-                  </label>
+                <div className="file-upload-box">
 
                   <input
                     type="file"
-                    className="form-control"
-                    accept=".pdf,.doc,.docx"
-                    onChange={handleResumeChange}
+                    accept=".jpg,.jpeg,.png,.webp"
+                    onChange={uploadProfileImage}
                   />
 
-                  <small className="text-muted">
-                    PDF, DOC or DOCX. Maximum 2 MB.
+                  <small>
+                    JPG, JPEG, PNG and WEBP only
                   </small>
 
-                  {user.resumeName && (
-                    <div className="mt-2">
-                      <span className="badge bg-success">
-                        📄 {user.resumeName}
-                      </span>
-                    </div>
-                  )}
                 </div>
+
               </div>
 
-              <div className="d-flex flex-wrap gap-2 mt-4">
+              {/* RESUME */}
+
+              <div className="profile-section">
+
+                <h5>Resume</h5>
+
+                <div className="file-upload-box">
+
+                  <input
+                    type="file"
+                    accept=".pdf,.doc,.docx"
+                    onChange={uploadResume}
+                  />
+
+                  <small>
+                    PDF, DOC and DOCX only
+                  </small>
+
+                  {user.resume_path && (
+                    <a
+                      href={resumeUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="current-resume"
+                    >
+                      View Current Resume
+                    </a>
+                  )}
+
+                </div>
+
+              </div>
+
+              {/* EDUCATION */}
+
+              <div className="profile-section">
+
+                <h5>Education & Experience</h5>
+
+                <div className="form-grid">
+
+                  {/* DEGREE */}
+
+                  <div className="form-group">
+
+                    <label>Degree</label>
+
+                    <input
+                      type="text"
+                      name="degree"
+                      value={user.degree}
+                      onChange={handleChange}
+                      placeholder="B.Sc / B.Tech"
+                    />
+
+                  </div>
+
+                  {/* COLLEGE */}
+
+                  <div className="form-group">
+
+                    <label>College</label>
+
+                    <input
+                      type="text"
+                      name="college"
+                      value={user.college}
+                      onChange={handleChange}
+                      placeholder="College Name"
+                    />
+
+                  </div>
+
+                  {/* BRANCH */}
+
+                  <div className="form-group">
+
+                    <label>Branch</label>
+
+                    <input
+                      type="text"
+                      name="branch"
+                      value={user.branch}
+                      onChange={handleChange}
+                      placeholder="Computer Science"
+                    />
+
+                  </div>
+
+                  {/* PASSOUT */}
+
+                  <div className="form-group">
+
+                    <label>Passout Year</label>
+
+                    <input
+                      type="text"
+                      name="passout_year"
+                      value={user.passout_year}
+                      onChange={handleChange}
+                      placeholder="2025"
+                    />
+
+                  </div>
+
+                  {/* EXPERIENCE */}
+
+                  <div className="form-group">
+
+                    <label>Experience</label>
+
+                    <input
+                      type="text"
+                      name="experience"
+                      value={user.experience}
+                      onChange={handleChange}
+                      placeholder="Fresher / 1 Year"
+                    />
+
+                  </div>
+
+                  {/* LINKEDIN */}
+
+                  <div className="form-group">
+
+                    <label>LinkedIn</label>
+
+                    <input
+                      type="text"
+                      name="linkedin"
+                      value={user.linkedin}
+                      onChange={handleChange}
+                      placeholder="https://linkedin.com/in/username"
+                    />
+
+                  </div>
+
+                  {/* GITHUB */}
+
+                  <div className="form-group">
+
+                    <label>GitHub</label>
+
+                    <input
+                      type="text"
+                      name="github"
+                      value={user.github}
+                      onChange={handleChange}
+                      placeholder="https://github.com/username"
+                    />
+
+                  </div>
+
+                  {/* 10TH */}
+
+                  <div className="form-group">
+
+                    <label>10th Percentage</label>
+
+                    <input
+                      type="text"
+                      name="tenth"
+                      value={user.tenth}
+                      onChange={handleChange}
+                      placeholder="90%"
+                    />
+
+                  </div>
+
+                  {/* INTERMEDIATE */}
+
+                  <div className="form-group">
+
+                    <label>
+                      Intermediate Percentage
+                    </label>
+
+                    <input
+                      type="text"
+                      name="intermediate"
+                      value={user.intermediate}
+                      onChange={handleChange}
+                      placeholder="85%"
+                    />
+
+                  </div>
+
+                  {/* SKILLS */}
+
+                  <div className="form-group full-width">
+
+                    <label>Skills</label>
+
+                    <textarea
+                      name="skills"
+                      value={user.skills}
+                      onChange={handleChange}
+                      rows="4"
+                      placeholder="React, Python, Flask, MySQL, HTML, CSS"
+                    ></textarea>
+
+                    <small>
+                      Separate skills using commas.
+                    </small>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+              {/* SAVE / CANCEL */}
+
+              <div className="edit-buttons">
+
                 <button
-                  type="button"
-                  className="btn btn-success"
+                  className="save-btn"
                   onClick={saveProfile}
                 >
-                  💾 Save Profile
+                  Save Profile
                 </button>
 
                 <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={cancelEdit}
+                  className="cancel-btn"
+                  onClick={() => {
+                    setIsEdit(false);
+                    loadProfile();
+                  }}
                 >
                   Cancel
                 </button>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="row g-3">
-                <div className="col-md-6">
-                  <div className="border rounded-3 p-3 h-100">
-                    <strong>Name:</strong>
-                    <div className="mt-1 text-muted">
-                      {user.name || "Not provided"}
-                    </div>
-                  </div>
-                </div>
 
-                <div className="col-md-6">
-                  <div className="border rounded-3 p-3 h-100">
-                    <strong>Email:</strong>
-                    <div className="mt-1 text-muted">
-                      {user.email || "Not provided"}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-md-6">
-                  <div className="border rounded-3 p-3 h-100">
-                    <strong>Phone:</strong>
-                    <div className="mt-1 text-muted">
-                      {user.phone || "Not provided"}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-md-6">
-                  <div className="border rounded-3 p-3 h-100">
-                    <strong>Country:</strong>
-                    <div className="mt-1 text-muted">
-                      {user.country || "Not provided"}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-md-6">
-                  <div className="border rounded-3 p-3 h-100">
-                    <strong>State:</strong>
-                    <div className="mt-1 text-muted">
-                      {user.state || "Not provided"}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-md-6">
-                  <div className="border rounded-3 p-3 h-100">
-                    <strong>City:</strong>
-                    <div className="mt-1 text-muted">
-                      {user.city || "Not provided"}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-md-6">
-                  <div className="border rounded-3 p-3 h-100">
-                    <strong>College:</strong>
-                    <div className="mt-1 text-muted">
-                      {user.college || "Not provided"}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-md-6">
-                  <div className="border rounded-3 p-3 h-100">
-                    <strong>Branch:</strong>
-                    <div className="mt-1 text-muted">
-                      {user.branch || "Not provided"}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-md-6">
-                  <div className="border rounded-3 p-3 h-100">
-                    <strong>Passout Year:</strong>
-                    <div className="mt-1 text-muted">
-                      {user.passoutYear || "Not provided"}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-md-6">
-                  <div className="border rounded-3 p-3 h-100">
-                    <strong>Experience:</strong>
-                    <div className="mt-1 text-muted">
-                      {user.experience || "Not provided"}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-md-4">
-                  <div className="border rounded-3 p-3 h-100">
-                    <strong>10th %:</strong>
-                    <div className="mt-1 text-muted">
-                      {user.tenth || "Not provided"}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-md-4">
-                  <div className="border rounded-3 p-3 h-100">
-                    <strong>Intermediate %:</strong>
-                    <div className="mt-1 text-muted">
-                      {user.intermediate || "Not provided"}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-md-4">
-                  <div className="border rounded-3 p-3 h-100">
-                    <strong>Degree / CGPA:</strong>
-                    <div className="mt-1 text-muted">
-                      {user.degree || "Not provided"}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-12">
-                  <div className="border rounded-3 p-3">
-                    <strong>Skills:</strong>
-
-                    <div className="mt-2">
-                      {user.skills ? (
-                        user.skills
-                          .split(",")
-                          .map((skill, index) => (
-                            <span
-                              key={`${skill}-${index}`}
-                              className="badge bg-primary me-2 mb-2"
-                            >
-                              {skill.trim()}
-                            </span>
-                          ))
-                      ) : (
-                        <span className="text-muted">
-                          No skills added
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-md-6">
-                  <div className="border rounded-3 p-3 h-100">
-                    <strong>LinkedIn:</strong>
-
-                    <div className="mt-2">
-                      {hasLink(user.linkedin) ? (
-                        <a
-                          href={user.linkedin}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="btn btn-outline-primary btn-sm"
-                        >
-                          View LinkedIn
-                        </a>
-                      ) : (
-                        <span className="text-muted">
-                          Not provided
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-md-6">
-                  <div className="border rounded-3 p-3 h-100">
-                    <strong>GitHub:</strong>
-
-                    <div className="mt-2">
-                      {hasLink(user.github) ? (
-                        <a
-                          href={user.github}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="btn btn-outline-dark btn-sm"
-                        >
-                          View GitHub
-                        </a>
-                      ) : (
-                        <span className="text-muted">
-                          Not provided
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-12">
-                  <div className="border rounded-3 p-3">
-                    <strong>Resume:</strong>
-
-                    {user.resume ? (
-                      <div className="mt-2 d-flex flex-wrap align-items-center gap-2">
-                        <span className="text-muted">
-                          📄 {user.resumeName || "Resume"}
-                        </span>
-
-                        <a
-                          href={user.resume}
-                          download={user.resumeName || "resume"}
-                          className="btn btn-success btn-sm"
-                        >
-                          Download Resume
-                        </a>
-                      </div>
-                    ) : (
-                      <p className="text-muted mt-2 mb-0">
-                        No Resume Uploaded
-                      </p>
-                    )}
-                  </div>
-                </div>
               </div>
 
-              <div className="mt-4">
-                <button
-                    type="button"
-                    className="btn btn-primary w-100 w-md-auto"
-                    onClick={() => setIsEdit(true)}
-                >
-                ✏️ Edit Profile
-                </button>
-              </div>
-            </>
+            </div>
           )}
+
         </div>
+
       </div>
+
     </div>
   );
 }
 
-export default Profile; 
-
+export default Profile;

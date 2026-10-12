@@ -1,3 +1,4 @@
+
 /* =========================
    GLOBAL
 ========================= */
@@ -26,14 +27,11 @@ body {
 
 .login-page {
     min-height: 100vh;
-
     display: flex;
     justify-content: center;
     align-items: center;
-
     background: #e5e7eb;
-
-    padding: 20px;
+    padding: 70px 20px 20px;
 }
 
 
@@ -44,16 +42,11 @@ body {
 .login-container {
     width: 100%;
     max-width: 1300px;
-
     display: flex;
     flex-direction: row;
-
     background: #ffffff;
-
     border-radius: 25px;
-
     overflow: hidden;
-
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
 }
 
@@ -64,22 +57,13 @@ body {
 
 .login-left {
     flex: 1;
-
-    background: linear-gradient(
-        135deg,
-        #021b52,
-        #0f3ba9
-    );
-
+    min-width: 0;
+    background: linear-gradient(135deg, #021b52, #0f3ba9);
     display: flex;
     justify-content: center;
     align-items: center;
-
     padding: 40px;
-
     color: #ffffff;
-
-    min-width: 0;
 }
 
 .overlay {
@@ -90,19 +74,14 @@ body {
 .overlay h1 {
     font-size: 52px;
     font-weight: 700;
-
     margin-bottom: 15px;
-
     line-height: 1.2;
 }
 
 .overlay p {
     font-size: 18px;
-
     color: #dbeafe;
-
     line-height: 1.6;
-
     margin-bottom: 0;
 }
 
@@ -114,13 +93,9 @@ body {
 .login-image {
     width: 100%;
     max-width: 350px;
-
     height: auto;
-
     display: block;
-
     margin: 20px auto 0;
-
     object-fit: contain;
 }
 
@@ -131,16 +106,12 @@ body {
 
 .login-right {
     flex: 1;
-
+    min-width: 0;
     background: #f8fafc;
-
     display: flex;
     justify-content: center;
     align-items: center;
-
     padding: 40px;
-
-    min-width: 0;
 }
 
 
@@ -151,27 +122,18 @@ body {
 .login-card {
     width: 100%;
     max-width: 450px;
-
     background: #ffffff;
-
     padding: 40px;
-
     border-radius: 20px;
-
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
 .login-card h2 {
     text-align: center;
-
     font-size: 38px;
-
     margin-bottom: 25px;
-
     color: #0f172a;
-
     font-weight: 700;
-
     line-height: 1.2;
 }
 
@@ -182,36 +144,27 @@ body {
 
 .form-control {
     width: 100%;
-
     height: 55px;
-
     border-radius: 12px;
-
     border: 1px solid #dbeafe;
-
     margin-bottom: 15px;
 }
 
 .form-control:focus {
     border-color: #2563eb;
-
     box-shadow: 0 0 10px rgba(37, 99, 235, 0.25);
+    outline: none;
 }
 
 .btn-primary {
     width: 100%;
-
     height: 55px;
-
     border: none;
-
     border-radius: 12px;
-
     background: #2563eb;
-
     font-size: 17px;
-
     font-weight: 600;
+    color: #ffffff;
 }
 
 .btn-primary:hover {
@@ -220,27 +173,51 @@ body {
 
 .register-text {
     text-align: center;
-
     margin-top: 20px;
 }
 
 .register-text a {
     color: #2563eb;
-
     text-decoration: none;
-
     font-weight: 600;
 }
 
 
-/* ==================================================
+/* =========================
+   OTP INPUTS
+========================= */
+
+.otp-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.otp-box {
+    width: 50px;
+    height: 55px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    border: 2px solid #275DF5;
+    border-radius: 8px;
+    outline: none;
+}
+
+.otp-box:focus {
+    border-color: #1f4de0;
+    box-shadow: 0 0 8px rgba(39, 93, 245, 0.3);
+}
+
+
+/* =========================
    TABLET
-================================================== */
+========================= */
 
-@media (max-width: 992px) {
-
+@media (min-width: 577px) and (max-width: 992px) {
     .login-page {
-        padding: 15px;
+        padding: 50px 15px 15px;
     }
 
     .login-container {
@@ -274,223 +251,153 @@ body {
     .login-card h2 {
         font-size: 32px;
     }
+
+    .otp-container {
+        gap: 8px;
+    }
+
+    .otp-box {
+        width: 44px;
+        height: 50px;
+        font-size: 20px;
+    }
 }
 
 
-/* ==================================================
+/* =========================
    MOBILE
-================================================== */
+========================= */
 
 @media (max-width: 576px) {
-
-    /* PAGE */
-
     .login-page {
         min-height: 100vh;
-
-        padding: 10px;
-
+        padding: 35px 10px 10px;
         display: block;
-
         background: #e5e7eb;
     }
 
-
-    /* CONTAINER */
-
     .login-container {
         width: 100%;
-
         display: flex;
-
         flex-direction: column;
-
         border-radius: 15px;
-
         overflow: hidden;
-
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
     }
 
-
-    /* =========================
-       LEFT
-    ========================= */
-
     .login-left {
         width: 100%;
-
         flex: none;
-
-        padding: 25px 15px 25px;
-
+        padding: 25px 15px;
         min-height: auto;
-
         display: flex;
-
         justify-content: center;
-
         align-items: center;
     }
 
     .overlay {
         width: 100%;
-
         text-align: center;
     }
 
-
-    /* TITLE */
-
     .overlay h1 {
         font-size: 30px;
-
         line-height: 1.2;
-
         margin-bottom: 10px;
     }
 
-
-    /* DESCRIPTION */
-
     .overlay p {
         width: 100%;
-
         font-size: 14px;
-
         line-height: 1.5;
-
         margin: 0 auto;
-
         padding: 0 5px;
     }
 
-
-    /* IMAGE */
-
     .login-image {
         width: 90%;
-
         max-width: 280px;
-
         height: auto;
-
         display: block;
-
         margin: 18px auto 0;
-
         position: static;
-
         transform: none;
     }
 
-
-    /* =========================
-       RIGHT
-    ========================= */
-
     .login-right {
         width: 100%;
-
         flex: none;
-
         padding: 20px 15px;
-
         display: flex;
-
         justify-content: center;
-
         align-items: center;
     }
 
-
-    /* CARD */
-
     .login-card {
         width: 100%;
-
         max-width: 450px;
-
         padding: 25px 20px;
-
         border-radius: 15px;
-
         box-shadow: none;
     }
 
-
-    /* TITLE */
-
     .login-card h2 {
         font-size: 28px;
-
         line-height: 1.2;
-
         margin-bottom: 20px;
     }
 
-
-    /* INPUT */
-
     .form-control {
         width: 100%;
-
         height: 50px;
-
         font-size: 14px;
-
         margin-bottom: 12px;
-
         border-radius: 10px;
     }
-
-
-    /* BUTTON */
 
     .btn-primary {
         width: 100%;
-
         height: 50px;
-
         font-size: 15px;
-
         border-radius: 10px;
     }
 
-
-    /* LOGIN TEXT */
-
     .register-text {
         font-size: 14px;
-
         line-height: 1.5;
-
         margin-top: 18px;
     }
 
     .register-text a {
         font-size: 14px;
     }
+
+    .otp-container {
+        gap: 6px;
+        margin: 18px 0;
+    }
+
+    .otp-box {
+        width: min(44px, 13vw);
+        height: 48px;
+        font-size: 19px;
+        border-radius: 7px;
+    }
 }
 
 
-/* ==================================================
+/* =========================
    SMALL MOBILE
-================================================== */
+========================= */
 
 @media (max-width: 400px) {
-
     .login-page {
-        padding: 5px;
+        padding: 30px 5px 5px;
     }
-
 
     .login-container {
         border-radius: 12px;
     }
-
-
-    /* LEFT */
 
     .login-left {
         padding: 22px 12px 20px;
@@ -498,28 +405,20 @@ body {
 
     .overlay h1 {
         font-size: 27px;
-
         margin-bottom: 8px;
     }
 
     .overlay p {
         font-size: 13px;
-
         line-height: 1.45;
-
         padding: 0;
     }
 
     .login-image {
         width: 90%;
-
         max-width: 240px;
-
         margin-top: 15px;
     }
-
-
-    /* RIGHT */
 
     .login-right {
         padding: 15px 10px;
@@ -531,33 +430,37 @@ body {
 
     .login-card h2 {
         font-size: 25px;
-
         margin-bottom: 18px;
     }
 
     .form-control {
         height: 48px;
-
         font-size: 14px;
-
         border-radius: 9px;
     }
 
     .btn-primary {
         height: 48px;
-
         font-size: 14px;
-
         border-radius: 9px;
     }
 
     .register-text {
         font-size: 13px;
-
         margin-top: 15px;
     }
 
     .register-text a {
         font-size: 13px;
+    }
+
+    .otp-container {
+        gap: 5px;
+    }
+
+    .otp-box {
+        width: min(40px, 12vw);
+        height: 44px;
+        font-size: 17px;
     }
 }

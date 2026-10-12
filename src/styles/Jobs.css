@@ -1,0 +1,440 @@
+/* =========================================
+   JOBS PAGE
+========================================= */
+
+.jobs-page {
+  width: 100%;
+  min-height: 100vh;
+  padding: 30px 20px 50px;
+  background: #f8fafc;
+  box-sizing: border-box;
+}
+
+.jobs-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.jobs-header {
+  margin-bottom: 25px;
+}
+
+.jobs-header h1 {
+  margin: 0 0 6px;
+  color: #0f172a;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.jobs-header p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+
+/* =========================================
+   MAIN LAYOUT
+========================================= */
+
+.jobs-layout {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+
+/* =========================================
+   FILTER SIDEBAR
+========================================= */
+
+.jobs-filter-sidebar {
+  width: 250px;
+  padding: 18px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  box-sizing: border-box;
+  position: sticky;
+  top: 20px;
+}
+
+.jobs-filter-sidebar h3 {
+  margin: 0 0 18px;
+  color: #0f172a;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.filter-group {
+  margin-bottom: 16px;
+}
+
+.filter-group label {
+  display: block;
+  margin-bottom: 7px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.filter-group input,
+.filter-group select {
+  width: 100%;
+  height: 40px;
+  padding: 0 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  outline: none;
+  background: #ffffff;
+  color: #334155;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+  border-color: #2563eb;
+}
+
+.clear-filters-btn {
+  width: 100%;
+  height: 40px;
+  border: 1px solid #2563eb;
+  border-radius: 6px;
+  background: #300404;
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.clear-filters-btn:hover {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+
+/* =========================================
+   JOB RESULTS
+========================================= */
+
+.jobs-results {
+  width: 100%;
+  min-width: 0;
+}
+
+
+/* =========================================
+   SEARCH BAR
+========================================= */
+
+.jobs-search {
+  width: 100%;
+  height: 45px;
+  margin-bottom: 18px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 7px;
+  box-sizing: border-box;
+}
+
+.jobs-search i {
+  flex-shrink: 0;
+  margin-right: 10px;
+  color: #64748b;
+  font-size: 15px;
+}
+
+.jobs-search input {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #1e293b;
+  font-size: 14px;
+}
+
+.jobs-search input::placeholder {
+  color: #94a3b8;
+}
+
+
+/* =========================================
+   JOB GRID
+   3 CARDS PER ROW
+========================================= */
+
+.jobs-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  align-items: stretch;
+}
+
+.jobs-grid > * {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+
+/* =========================================
+   JOB CARD SIZE CONTROL
+========================================= */
+
+.jobs-grid .job-card {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+
+/* =========================================
+   NO JOBS
+========================================= */
+
+.no-jobs {
+  width: 100%;
+  padding: 50px 20px;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+.no-jobs h3 {
+  margin: 0 0 8px;
+  color: #334155;
+  font-size: 18px;
+}
+
+.no-jobs p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+
+/* =========================================
+   PAGINATION
+========================================= */
+
+.jobs-pagination {
+  margin-top: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.pagination-btn,
+.page-number {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: 0.2s ease;
+}
+
+.pagination-btn:hover:not(:disabled),
+.page-number:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.page-number.active {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.page-numbers {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+
+/* =========================================
+   LOADING
+========================================= */
+
+.jobs-loading {
+  width: 100%;
+  padding: 60px 20px;
+  text-align: center;
+  color: #64748b;
+  font-size: 15px;
+}
+
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 1100px) {
+
+  .jobs-layout {
+    grid-template-columns: 220px minmax(0, 1fr);
+  }
+
+  .jobs-filter-sidebar {
+    width: 220px;
+  }
+
+  .jobs-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 768px) {
+
+  .jobs-page {
+    padding: 22px 15px 40px;
+  }
+
+  .jobs-header h1 {
+    font-size: 24px;
+  }
+
+  .jobs-layout {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .jobs-filter-sidebar {
+    width: 100%;
+    position: static;
+    padding: 16px;
+  }
+
+  .jobs-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .jobs-search {
+    height: 44px;
+  }
+
+  .jobs-pagination {
+    margin-top: 20px;
+  }
+}
+
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media (max-width: 480px) {
+
+  .jobs-page {
+    padding: 18px 12px 35px;
+  }
+
+  .jobs-header h1 {
+    font-size: 22px;
+  }
+
+  .jobs-header p {
+    font-size: 13px;
+  }
+
+  .jobs-filter-sidebar {
+    padding: 14px;
+  }
+
+  .filter-group {
+    margin-bottom: 14px;
+  }
+
+  .jobs-grid {
+    gap: 12px;
+  }
+
+  .pagination-btn,
+  .page-number {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 8px;
+  }
+}
+```css
+/* =========================================================
+   JOBS PAGE - NAVBAR SPACING
+========================================================= */
+
+.jobs-page {
+  padding-top: 95px !important;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   JOBS PAGE HEADER
+========================================================= */
+
+.jobs-header {
+  margin-top: 0 !important;
+  padding-top: 10px;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 991.98px) {
+  .jobs-page {
+    padding-top: 90px !important;
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 575.98px) {
+  .jobs-page {
+    padding-top: 85px !important;
+  }
+}
+/* ========================================================= JOBS PAGE Navbar fixed-top overlap fix ========================================================= */ .jobs-page { width: 100%; min-height: 100vh; /* Navbar height + proper gap */ padding-top: 115px !important; padding-bottom: 60px; box-sizing: border-box; } /* ========================================================= JOBS HEADER / TITLE ========================================================= */ .jobs-header { margin-top: 0 !important; padding-top: 5px; } /* ========================================================= JOBS TITLE ========================================================= */ .jobs-header h1, .jobs-header h2, .jobs-header h3 { margin-top: 0; } /* ========================================================= DESKTOP ========================================================= */ @media (min-width: 992px) { .jobs-page { padding-top: 115px !important; } } /* ========================================================= TABLET / MOBILE ========================================================= */ @media (max-width: 991.98px) { .jobs-page { padding-top: 100px !important; } } /* ========================================================= SMALL MOBILE ========================================================= */ @media (max-width: 575.98px) { .jobs-page { padding-top: 90px !important; } }

@@ -1,6 +1,27 @@
+import { useNavigate } from "react-router-dom";
 import "../styles/Hero.css";
 
-function Hero({ searchText, setSearchText }) {
+function Hero({
+  searchText,
+  setSearchText,
+}) {
+  const navigate = useNavigate();
+
+  const handleSearch = () => {
+    const keyword = searchText.trim();
+
+    if (!keyword) {
+      navigate("/jobs");
+      return;
+    }
+
+    navigate(
+      `/jobs?keyword=${encodeURIComponent(
+        keyword
+      )}`
+    );
+  };
+
   return (
     <section className="hero-section">
       <div className="container text-center">
@@ -13,22 +34,108 @@ function Hero({ searchText, setSearchText }) {
           10,000+ Jobs • Top Companies • Easy Apply
         </p>
 
-       <div className="search-box">
-  <div className="search-field">
-    <i className="bi bi-search"></i>
+        {/* Search Box */}
+        <div className="search-box">
 
-    <input
-      type="text"
-      placeholder="Search jobs, skills, companies..."
-      value={searchText}
-      onChange={(e) => setSearchText(e.target.value)}
-    />
-  </div>
-  <button className="search-btn">
-    Search
-  </button>
-</div>
+          <div className="search-field">
+            <i className="bi bi-search"></i>
 
+            <input
+              type="text"
+              placeholder="Search jobs, skills, companies..."
+              value={searchText}
+              onChange={(e) =>
+                setSearchText(
+                  e.target.value
+                )
+              }
+              onKeyDown={(e) => {
+                if (
+                  e.key === "Enter"
+                ) {
+                  handleSearch();
+                }
+              }}
+            />
+          </div>
+
+          <button
+            className="search-btn"
+            onClick={
+              handleSearch
+            }
+          >
+            Search
+          </button>
+
+        </div>
+
+        {/* Popular Searches */}
+        <div className="mt-4">
+
+          <span
+            className="badge bg-light text-dark me-2"
+            style={{ cursor: "pointer" }}
+            onClick={() =>
+              navigate(
+                "/jobs?keyword=React Developer"
+              )
+            }
+          >
+            React Developer
+          </span>
+
+          <span
+            className="badge bg-light text-dark me-2"
+            style={{ cursor: "pointer" }}
+            onClick={() =>
+              navigate(
+                "/jobs?keyword=Python Developer"
+              )
+            }
+          >
+            Python Developer
+          </span>
+
+          <span
+            className="badge bg-light text-dark me-2"
+            style={{ cursor: "pointer" }}
+            onClick={() =>
+              navigate(
+                "/jobs?keyword=Java Developer"
+              )
+            }
+          >
+            Java Developer
+          </span>
+
+          <span
+            className="badge bg-light text-dark me-2"
+            style={{ cursor: "pointer" }}
+            onClick={() =>
+              navigate(
+                "/jobs?keyword=Data Analyst"
+              )
+            }
+          >
+            Data Analyst
+          </span>
+
+          <span
+            className="badge bg-light text-dark"
+            style={{ cursor: "pointer" }}
+            onClick={() =>
+              navigate(
+                "/jobs?keyword=Full Stack Developer"
+              )
+            }
+          >
+            Full Stack Developer
+          </span>
+
+        </div>
+
+        {/* Stats */}
         <div className="hero-stats">
 
           <div className="stat-card">

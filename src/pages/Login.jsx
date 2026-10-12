@@ -12,6 +12,8 @@ function Login() {
     password: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -19,31 +21,88 @@ function Login() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const users =
-      JSON.parse(localStorage.getItem("users")) || [];
+    setLoading(true);
 
-    const user = users.find(
-      (u) =>
-        u.email?.toLowerCase().trim() ===
-          form.email?.toLowerCase().trim() &&
-        u.password === form.password
-    );
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(form),
+        }
+      );
 
-    if (!user) {
-      toast.error("Invalid Email or Password");
-      return;
+      const data = await response.json();
+
+      if (
+        response.ok &&
+        data.status === "success"
+      ) {
+        const userData = {
+          id:
+            data.id ||
+            data.user?.id,
+
+          username:
+            data.username ||
+            data.user?.username ||
+            "User",
+
+          email:
+            data.email ||
+            form.email,
+        };
+
+        sessionStorage.setItem(
+          "loggedUser",
+          JSON.stringify(userData)
+        );
+
+        sessionStorage.setItem(
+          "userId",
+          userData.id
+        );
+
+        sessionStorage.setItem(
+          "email",
+          userData.email
+        );
+
+        sessionStorage.setItem(
+          "username",
+          userData.username
+        );
+
+        sessionStorage.setItem(
+          "isLoggedIn",
+          "true"
+        );
+
+        toast.success(
+          data.message ||
+            "Login Successful"
+        );
+
+        navigate("/");
+      } else {
+        toast.error(
+          data.message ||
+            "Invalid Email or Password"
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Server Error");
+    } finally {
+      setLoading(false);
     }
-
-    localStorage.setItem(
-      "loggedUser",
-      JSON.stringify(user)
-    );
-
-    toast.success(`Welcome ${user.name}`);
-    navigate("/");
   };
 
   return (
@@ -56,14 +115,20 @@ function Login() {
 
             <h1>
               Find Your
-              <span style={{ color: "#60a5fa" }}>
-                {" "}Dream Job
+              <span
+                style={{
+                  color: "#60a5fa",
+                }}
+              >
+                {" "}
+                Dream Job
               </span>
             </h1>
 
             <p>
-              Search thousands of jobs from top
-              companies and apply instantly.
+              Search thousands of jobs
+              from top companies and
+              apply instantly.
             </p>
 
             <img
@@ -109,15 +174,25 @@ function Login() {
               <button
                 type="submit"
                 className="btn btn-primary w-100"
+                disabled={loading}
               >
-                Login
+                {loading
+                  ? "Logging in..."
+                  : "Login"}
               </button>
             </form>
 
-            <p className="register-text">
+            <p className="register-text mt-3">
               Don't have an account?
               <Link to="/register">
-                {" "}Register
+                {" "}
+                Register
+              </Link>
+            </p>
+
+            <p className="text-center mt-2">
+              <Link to="/forgot-password">
+                Forgot Password?
               </Link>
             </p>
 

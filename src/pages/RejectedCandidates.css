@@ -76,3 +76,610 @@
     font-size: 26px;
   }
 }
+/* =========================================================
+   REJECTED CANDIDATES PAGE
+========================================================= */
+
+.rejected-page {
+  width: 100%;
+  min-height: 100vh;
+  padding: 95px 20px 50px;
+  background: linear-gradient(135deg, #fff5f5, #fffafa);
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   MAIN CONTAINER
+========================================================= */
+
+.rejected-container {
+  width: 100%;
+  max-width: 1250px;
+  margin: 0 auto;
+}
+
+
+/* =========================================================
+   TOP ACTIONS
+========================================================= */
+
+.rejected-top-actions {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+
+/* Dashboard */
+
+.rejected-dashboard-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: auto !important;
+  min-width: 135px;
+
+  margin: 0 !important;
+  padding: 10px 20px;
+
+  border-radius: 10px !important;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+
+/* Refresh + Excel */
+
+.rejected-action-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+
+.rejected-action-buttons button {
+  width: auto !important;
+  min-width: 125px;
+  min-height: 42px;
+
+  margin: 0 !important;
+  padding: 9px 18px !important;
+
+  border-radius: 9px !important;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.rejected-header {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 25px;
+
+  margin-bottom: 30px;
+}
+
+
+.rejected-header h1 {
+  margin: 0;
+
+  font-size: 30px;
+  font-weight: 700;
+
+  color: #dc3545;
+}
+
+
+.rejected-header p {
+  margin: 8px 0 0;
+
+  color: #6c757d;
+  font-size: 15px;
+}
+
+
+/* =========================================================
+   COUNT BOX
+========================================================= */
+
+.rejected-count-box {
+  min-width: 190px;
+
+  padding: 18px 25px;
+
+  background: #ffffff;
+
+  border: 1px solid #f1d5d8;
+
+  border-radius: 14px;
+
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+}
+
+
+.rejected-count-number {
+  font-size: 30px;
+  font-weight: 700;
+  color: #dc3545;
+  line-height: 1;
+}
+
+
+.rejected-count-label {
+  margin-top: 7px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  color: #6c757d;
+  text-align: center;
+}
+
+
+/* =========================================================
+   REJECTED CARD
+========================================================= */
+
+.rejected-card {
+  width: 100%;
+
+  margin-bottom: 22px;
+
+  background: #ffffff;
+
+  border: 1px solid #f1e1e1;
+
+  border-radius: 16px;
+
+  overflow: hidden;
+
+  box-shadow: 0 7px 25px rgba(0, 0, 0, 0.07);
+
+  transition: all 0.25s ease;
+}
+
+
+.rejected-card:hover {
+  transform: translateY(-2px);
+
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.10);
+}
+
+
+.rejected-card-body {
+  padding: 25px;
+}
+
+
+/* =========================================================
+   PROFILE IMAGE
+========================================================= */
+
+.rejected-card .candidate-img {
+  width: 115px;
+  height: 115px;
+
+  object-fit: cover;
+
+  border-radius: 50%;
+
+  border: 4px solid #dc3545;
+
+  background: #ffffff;
+}
+
+
+/* =========================================================
+   CANDIDATE DETAILS
+========================================================= */
+
+.candidate-number {
+  display: inline-block;
+
+  margin-bottom: 6px;
+
+  padding: 4px 10px;
+
+  border-radius: 20px;
+
+  background: #fff0f1;
+
+  color: #dc3545;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+
+.candidate-name {
+  margin: 4px 0 12px;
+
+  font-size: 23px;
+  font-weight: 700;
+
+  color: #212529;
+}
+
+
+.rejected-card p {
+  margin-bottom: 7px;
+
+  color: #555;
+
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   SKILLS
+========================================================= */
+
+.skills-wrapper {
+  margin-top: 12px;
+}
+
+
+.skills-wrapper .badge {
+  font-size: 12px;
+
+  padding: 7px 10px;
+
+  border-radius: 20px;
+}
+
+
+/* =========================================================
+   CARD ACTIONS
+========================================================= */
+
+.rejected-card .d-grid {
+  width: 100%;
+}
+
+
+.rejected-card .d-grid .btn {
+  width: 100% !important;
+
+  min-height: 42px;
+
+  margin: 0 !important;
+
+  border-radius: 8px;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   EMPTY BOX
+========================================================= */
+
+.rejected-empty-box {
+  width: 100%;
+
+  padding: 60px 25px;
+
+  background: #ffffff;
+
+  border-radius: 16px;
+
+  border: 1px solid #eeeeee;
+
+  box-shadow: 0 7px 25px rgba(0, 0, 0, 0.06);
+
+  text-align: center;
+}
+
+
+.rejected-empty-box h3 {
+  margin-bottom: 10px;
+
+  color: #198754;
+  font-weight: 700;
+}
+
+
+.rejected-empty-box p {
+  margin: 0;
+
+  color: #6c757d;
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.rejected-loading {
+  min-height: calc(100vh - 70px);
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 15px;
+
+  background: #fffafa;
+}
+
+
+.rejected-loading h4 {
+  margin: 0;
+
+  color: #555;
+
+  font-size: 18px;
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.rejected-card .modal-content {
+  border: 0;
+
+  border-radius: 14px;
+
+  overflow: hidden;
+
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.20);
+}
+
+
+.rejected-card .modal-header {
+  padding: 17px 22px;
+}
+
+
+.rejected-card .modal-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+
+.rejected-card .modal-body {
+  background: #ffffff;
+}
+
+
+.rejected-card .modal-body img {
+  object-fit: cover;
+}
+
+
+.rejected-card .modal-body h3 {
+  font-size: 23px;
+  font-weight: 700;
+
+  color: #212529;
+}
+
+
+.rejected-card .modal-body p {
+  color: #555;
+  font-size: 14px;
+}
+
+
+.rejected-card .modal-body h5 {
+  font-weight: 700;
+
+  color: #343a40;
+
+  margin-bottom: 12px;
+}
+
+
+.rejected-card .modal-body hr {
+  margin: 22px 0;
+
+  border-color: #eeeeee;
+}
+
+
+/* Modal Resume Button */
+
+.rejected-card .modal-body > .btn {
+  width: auto !important;
+
+  min-width: 140px;
+
+  margin-top: 10px !important;
+}
+
+
+/* =========================================================
+   RESPONSIVE - TABLET
+========================================================= */
+
+@media (max-width: 991px) {
+
+  .rejected-page {
+    padding: 90px 15px 45px;
+  }
+
+
+  .rejected-header {
+    align-items: flex-start;
+  }
+
+
+  .rejected-header h1 {
+    font-size: 27px;
+  }
+
+
+  .rejected-card-body {
+    padding: 22px;
+  }
+
+
+  .rejected-card .candidate-img {
+    width: 105px;
+    height: 105px;
+  }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE - MOBILE
+========================================================= */
+
+@media (max-width: 768px) {
+
+  .rejected-page {
+    padding: 90px 12px 35px;
+  }
+
+
+  /* Top buttons */
+
+  .rejected-top-actions {
+    flex-direction: column;
+
+    align-items: stretch;
+
+    gap: 10px;
+  }
+
+
+  .rejected-dashboard-btn {
+    width: 100% !important;
+  }
+
+
+  .rejected-action-buttons {
+    width: 100%;
+
+    display: flex;
+
+    gap: 10px;
+  }
+
+
+  .rejected-action-buttons button {
+    flex: 1;
+
+    width: auto !important;
+
+    min-width: 0;
+  }
+
+
+  /* Header */
+
+  .rejected-header {
+    flex-direction: column;
+
+    align-items: stretch;
+
+    gap: 15px;
+  }
+
+
+  .rejected-header h1 {
+    font-size: 24px;
+  }
+
+
+  .rejected-count-box {
+    width: 100%;
+
+    min-width: 0;
+  }
+
+
+  /* Card */
+
+  .rejected-card-body {
+    padding: 20px 16px;
+  }
+
+
+  .candidate-name {
+    font-size: 21px;
+  }
+
+
+  .rejected-card .candidate-img {
+    width: 100px;
+    height: 100px;
+  }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+  .rejected-page {
+    padding: 85px 8px 30px;
+  }
+
+
+  .rejected-action-buttons {
+    flex-direction: column;
+  }
+
+
+  .rejected-action-buttons button {
+    width: 100% !important;
+  }
+
+
+  .rejected-header h1 {
+    font-size: 22px;
+  }
+
+
+  .rejected-card-body {
+    padding: 17px 13px;
+  }
+
+
+  .rejected-card .candidate-img {
+    width: 90px;
+    height: 90px;
+  }
+
+
+  .candidate-name {
+    font-size: 19px;
+  }
+
+
+  .rejected-empty-box {
+    padding: 45px 15px;
+  }
+
+}

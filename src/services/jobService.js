@@ -1,16 +1,59 @@
-import jobs from "../data/jobs";
+import axios from "axios";
 
-export const getJobs = () => {
-  const adminJobs =
-    JSON.parse(localStorage.getItem("adminJobs")) || [];
+const API_URL = "http://localhost:5000/api";
 
-  return [...jobs, ...adminJobs];
+export const getJobs = async () => {
+  const response = await axios.get(
+    `${API_URL}/jobs`,
+    {
+      withCredentials: true,
+    }
+  );
+
+  return response.data;
 };
 
-export const getJobById = (id) => {
-  const allJobs = getJobs();
-
-  return allJobs.find(
-    (job) => Number(job.id) === Number(id)
+export const getJobById = async (id) => {
+  const response = await axios.get(
+    `${API_URL}/job/${id}`,
+    {
+      withCredentials: true,
+    }
   );
+
+  return response.data;
+};
+
+export const saveJob = async (jobId) => {
+  const response = await axios.post(
+    `${API_URL}/save-job/${jobId}`,
+    {},
+    {
+      withCredentials: true,
+    }
+  );
+
+  return response.data;
+};
+
+export const getSavedJobs = async () => {
+  const response = await axios.get(
+    `${API_URL}/saved-jobs`,
+    {
+      withCredentials: true,
+    }
+  );
+
+  return response.data;
+};
+
+export const removeSavedJob = async (savedId) => {
+  const response = await axios.delete(
+    `${API_URL}/remove-saved-job/${savedId}`,
+    {
+      withCredentials: true,
+    }
+  );
+
+  return response.data;
 };
