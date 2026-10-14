@@ -15,6 +15,7 @@ function RejectedCandidates() {
 
   const navigate = useNavigate();
 
+  // ADMIN LOGIN CHECK
   useEffect(() => {
     const isAdmin = sessionStorage.getItem("admin");
 
@@ -25,11 +26,11 @@ function RejectedCandidates() {
     }
 
     loadRejectedCandidates();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
-  // =========================
   // LOAD REJECTED CANDIDATES
-  // =========================
   const loadRejectedCandidates = async (isRefresh = false) => {
     try {
       if (isRefresh) {
@@ -70,23 +71,44 @@ function RejectedCandidates() {
         return;
       }
 
-      toast.error("Failed To Load Candidates");
+      toast.error(
+        error.response?.data?.message ||
+          "Failed To Load Candidates"
+      );
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
   };
 
-  // =========================
   // REFRESH
-  // =========================
   const handleRefresh = () => {
     loadRejectedCandidates(true);
   };
 
-  // =========================
+  // FORMAT DATE
+  const formatDate = (date) => {
+    if (!date) return "N/A";
+
+    const parsedDate = new Date(date);
+
+    if (Number.isNaN(parsedDate.getTime())) {
+      return "N/A";
+    }
+
+    return parsedDate.toLocaleDateString("en-IN");
+  };
+
+  // IMAGE URL
+  const getImageUrl = (path) => {
+    if (!path) {
+      return "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+    }
+
+    return `http://localhost:5000/${path.replace(/^\/+/, "")}`;
+  };
+
   // DOWNLOAD EXCEL
-  // =========================
   const downloadExcel = async () => {
     if (rejected.length === 0) {
       toast.warning("No Rejected Candidates Available");
@@ -106,17 +128,23 @@ function RejectedCandidates() {
         "Rejected Candidates"
       );
 
-      // =========================
       // TITLE
-      // =========================
-      worksheet.mergeCells("A1:I1");
+      worksheet.mergeCells("A1:J1");
 
       const titleCell = worksheet.getCell("A1");
 
       titleCell.value = "REJECTED CANDIDATES";
+
       titleCell.font = {
         bold: true,
         size: 16,
+        color: { argb: "FFFFFFFF" },
+      };
+
+      titleCell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FFDC3545" },
       };
 
       titleCell.alignment = {
@@ -124,17 +152,15 @@ function RejectedCandidates() {
         vertical: "middle",
       };
 
-      worksheet.getRow(1).height = 28;
+      worksheet.getRow(1).height = 30;
 
-      // =========================
       // TOTAL COUNT
-      // =========================
-      worksheet.mergeCells("A2:I2");
+      worksheet.mergeCells("A2:J2");
 
       const countCell = worksheet.getCell("A2");
 
       countCell.value =
-        `Total Rejected Candidates : ${rejected.length}`;
+        `Total Rejected Candidates: ${rejected.length}`;
 
       countCell.font = {
         bold: true,
@@ -146,32 +172,38 @@ function RejectedCandidates() {
         vertical: "middle",
       };
 
-      worksheet.getRow(2).height = 22;
+      worksheet.getRow(2).height = 24;
 
-      // Empty row
+      // EMPTY ROW
       worksheet.addRow([]);
 
-      // =========================
-      // HEADER
-      // =========================
+      // HEADERS
       const headerRow = worksheet.addRow([
         "S.No",
         "Candidate Name",
         "Email",
         "Phone",
         "State",
-        "Job Title",
+        "Rejected For (Job Role)",
+        "Company",
         "Skills",
         "Applied Date",
         "Status",
       ]);
 
-      headerRow.height = 25;
+      headerRow.height = 35;
 
       headerRow.eachCell((cell) => {
         cell.font = {
           bold: true,
           size: 11,
+          color: { argb: "FFFFFFFF" },
+        };
+
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FFDC3545" },
         };
 
         cell.alignment = {
@@ -188,27 +220,22 @@ function RejectedCandidates() {
         };
       });
 
-      // =========================
-      // CANDIDATES
-      // =========================
+      // CANDIDATE DATA
       rejected.forEach((candidate, index) => {
-        const appliedDate = candidate.applied_date
-          ? new Date(
-              candidate.applied_date
-            ).toLocaleDateString()
-          : "N/A";
-
         const row = worksheet.addRow([
           index + 1,
           candidate.username || "N/A",
           candidate.email || "N/A",
           candidate.phone || "N/A",
           candidate.state || "N/A",
-          candidate.job_title || "N/A",
+          candidate.job_title || "Role Not Available",
+          candidate.company_name || "N/A",
           candidate.skills || "N/A",
-          appliedDate,
-          "Rejected",
+          formatDate(candidate.applied_date),
+          candidate.status || "Rejected",
         ]);
+
+        row.height = 30;
 
         row.eachCell((cell) => {
           cell.alignment = {
@@ -224,54 +251,28 @@ function RejectedCandidates() {
           };
         });
 
-        row.height = 25;
+        // Highlight rejected job role
+        row.getCell(6).font = {
+          bold: true,
+          color: { argb: "FFDC3545" },
+        };
       });
 
-      // =========================
       // COLUMN WIDTHS
-      // =========================
       worksheet.columns = [
-        {
-          key: "sno",
-          width: 8,
-        },
-        {
-          key: "name",
-          width: 25,
-        },
-        {
-          key: "email",
-          width: 32,
-        },
-        {
-          key: "phone",
-          width: 16,
-        },
-        {
-          key: "state",
-          width: 18,
-        },
-        {
-          key: "job",
-          width: 28,
-        },
-        {
-          key: "skills",
-          width: 40,
-        },
-        {
-          key: "date",
-          width: 18,
-        },
-        {
-          key: "status",
-          width: 16,
-        },
+        { key: "sno", width: 8 },
+        { key: "name", width: 25 },
+        { key: "email", width: 32 },
+        { key: "phone", width: 16 },
+        { key: "state", width: 18 },
+        { key: "job_title", width: 32 },
+        { key: "company_name", width: 25 },
+        { key: "skills", width: 40 },
+        { key: "applied_date", width: 18 },
+        { key: "status", width: 16 },
       ];
 
-      // =========================
       // FREEZE HEADER
-      // =========================
       worksheet.views = [
         {
           state: "frozen",
@@ -279,64 +280,60 @@ function RejectedCandidates() {
         },
       ];
 
-      // =========================
       // FILTER
-      // =========================
       worksheet.autoFilter = {
         from: "A4",
-        to: "I4",
+        to: "J4",
       };
 
-      // =========================
       // CREATE EXCEL FILE
-      // =========================
       const buffer = await workbook.xlsx.writeBuffer();
 
       const blob = new Blob([buffer], {
-        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        type:
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
 
       const url = window.URL.createObjectURL(blob);
-
       const link = document.createElement("a");
 
       link.href = url;
 
-      link.download =
-        `Rejected_Candidates_${new Date()
-          .toISOString()
-          .slice(0, 10)}.xlsx`;
+      link.download = `Rejected_Candidates_${new Date()
+        .toISOString()
+        .slice(0, 10)}.xlsx`;
 
       document.body.appendChild(link);
-
       link.click();
-
       document.body.removeChild(link);
 
-      window.URL.revokeObjectURL(url);
+      window.setTimeout(() => {
+        window.URL.revokeObjectURL(url);
+      }, 1000);
 
       toast.success(
         `${rejected.length} Rejected Candidates Exported`
       );
     } catch (error) {
       console.error("EXCEL DOWNLOAD ERROR:", error);
-
       toast.error("Failed To Download Excel");
     } finally {
       setDownloading(false);
     }
   };
 
-  // =========================
   // LOADING
-  // =========================
   if (loading) {
     return (
       <>
         <AdminNavbar />
 
         <div className="rejected-loading">
-          <div className="spinner-border text-danger"></div>
+          <div
+            className="spinner-border text-danger"
+            role="status"
+            aria-label="Loading"
+          />
 
           <h4>Loading Rejected Candidates...</h4>
         </div>
@@ -344,20 +341,16 @@ function RejectedCandidates() {
     );
   }
 
+  // MAIN UI
   return (
     <>
       <AdminNavbar />
 
       <div className="rejected-page">
-
         <div className="rejected-container">
 
-          {/* =========================
-              TOP ACTIONS
-          ========================= */}
-
+          {/* TOP ACTIONS */}
           <div className="rejected-top-actions">
-
             <Link
               to="/admin"
               className="btn btn-dark rejected-dashboard-btn"
@@ -366,26 +359,22 @@ function RejectedCandidates() {
             </Link>
 
             <div className="rejected-action-buttons">
-
               <button
                 type="button"
                 className="btn btn-outline-danger"
                 onClick={handleRefresh}
-                disabled={refreshing}
+                disabled={refreshing || downloading}
               >
                 {refreshing ? (
                   <>
                     <span
                       className="spinner-border spinner-border-sm me-2"
                       role="status"
-                    ></span>
-
+                    />
                     Refreshing...
                   </>
                 ) : (
-                  <>
-                    ↻ Refresh
-                  </>
+                  <>↻ Refresh</>
                 )}
               </button>
 
@@ -395,7 +384,8 @@ function RejectedCandidates() {
                 onClick={downloadExcel}
                 disabled={
                   rejected.length === 0 ||
-                  downloading
+                  downloading ||
+                  refreshing
                 }
               >
                 {downloading ? (
@@ -403,35 +393,22 @@ function RejectedCandidates() {
                     <span
                       className="spinner-border spinner-border-sm me-2"
                       role="status"
-                    ></span>
-
+                    />
                     Downloading...
                   </>
                 ) : (
-                  <>
-                    📊 Download Excel
-                  </>
+                  <>📊 Download Excel</>
                 )}
               </button>
-
             </div>
-
           </div>
 
-          {/* =========================
-              HEADER
-          ========================= */}
-
+          {/* HEADER */}
           <div className="rejected-header">
-
             <div>
-              <h1>
-                ❌ Rejected Candidates
-              </h1>
+              <h1>❌ Rejected Candidates</h1>
 
-              <p>
-                Manage rejected applicants
-              </p>
+              <p>Manage rejected applicants</p>
             </div>
 
             <div className="rejected-count-box">
@@ -443,74 +420,55 @@ function RejectedCandidates() {
                 Rejected Candidates
               </span>
             </div>
-
           </div>
 
-          {/* =========================
-              EMPTY
-          ========================= */}
-
+          {/* EMPTY STATE */}
           {rejected.length === 0 ? (
-
             <div className="rejected-empty-box">
+              <h3>🎉 No Rejected Candidates</h3>
 
-              <h3>
-                🎉 No Rejected Candidates
-              </h3>
-
-              <p>
-                No rejected applications found.
-              </p>
-
+              <p>No rejected applications found.</p>
             </div>
-
           ) : (
-
-            /* =========================
-               CANDIDATES
-            ========================= */
-
+            /* CANDIDATES */
             rejected.map((candidate, index) => (
-
               <div
-                key={candidate.id}
+                key={
+                  candidate.application_id ??
+                  candidate.id ??
+                  `${candidate.email}-${index}`
+                }
                 className="rejected-card"
               >
-
                 <div className="rejected-card-body">
-
                   <div className="row align-items-center">
 
                     {/* PROFILE IMAGE */}
-
                     <div className="col-lg-2 text-center mb-3 mb-lg-0">
-
                       <img
-                        src={
-                          candidate.profile_image
-                            ? `http://localhost:5000/${candidate.profile_image}`
-                            : "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
-                        }
-                        alt="profile"
+                        src={getImageUrl(candidate.profile_image)}
+                        alt="Candidate profile"
                         className="candidate-img"
+                        onError={(event) => {
+                          event.currentTarget.onerror = null;
+                          event.currentTarget.src =
+                            "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+                        }}
                       />
-
                     </div>
 
-                    {/* DETAILS */}
-
+                    {/* CANDIDATE DETAILS */}
                     <div className="col-lg-7">
-
                       <div className="candidate-number">
                         Candidate #{index + 1}
                       </div>
 
                       <h3 className="candidate-name">
-                        {candidate.username}
+                        {candidate.username || "N/A"}
                       </h3>
 
                       <p>
-                        📧 {candidate.email}
+                        📧 {candidate.email || "N/A"}
                       </p>
 
                       <p>
@@ -521,26 +479,28 @@ function RejectedCandidates() {
                         📍 {candidate.state || "N/A"}
                       </p>
 
-                      <p>
-                        💼{" "}
-                        <b>
-                          {candidate.job_title || "N/A"}
-                        </b>
-                      </p>
+                      {/* REJECTED JOB ROLE */}
+                      <div className="mb-3 p-3 border rounded">
+                        <p className="mb-1">
+                          ❌ <strong>Rejected For (Job Role)</strong>
+                        </p>
+
+                        <h5 className="text-danger fw-bold mb-1">
+                          {candidate.job_title ||
+                            "Role Not Available"}
+                        </h5>
+
+                        <p className="mb-0">
+                          🏢 {candidate.company_name || "N/A"}
+                        </p>
+                      </div>
 
                       <p>
-                        📅 Applied :{" "}
-                        {candidate.applied_date
-                          ? new Date(
-                              candidate.applied_date
-                            ).toLocaleDateString()
-                          : "N/A"}
+                        📅 Applied: {formatDate(candidate.applied_date)}
                       </p>
 
                       {/* SKILLS */}
-
                       <div className="skills-wrapper">
-
                         {candidate.skills ? (
                           candidate.skills
                             .split(",")
@@ -553,37 +513,30 @@ function RejectedCandidates() {
                               </span>
                             ))
                         ) : (
-                          <span>
-                            No Skills Available
-                          </span>
+                          <span>No Skills Available</span>
                         )}
-
                       </div>
-
                     </div>
 
                     {/* ACTIONS */}
-
                     <div className="col-lg-3 text-lg-end">
-
                       <span className="badge bg-danger fs-6 px-4 py-2">
                         ✖ Rejected
                       </span>
 
                       <div className="d-grid gap-2 mt-3">
-
                         <button
                           type="button"
                           className="btn btn-outline-primary"
                           data-bs-toggle="modal"
-                          data-bs-target={`#profile${index}`}
+                          data-bs-target={`#profile${candidate.application_id ?? candidate.id ?? index}`}
                         >
                           👤 View Profile
                         </button>
 
                         {candidate.resume_path && (
                           <a
-                            href={`http://localhost:5000/${candidate.resume_path}`}
+                            href={getImageUrl(candidate.resume_path)}
                             target="_blank"
                             rel="noreferrer"
                             className="btn btn-danger"
@@ -591,32 +544,28 @@ function RejectedCandidates() {
                             📄 View Resume
                           </a>
                         )}
-
                       </div>
-
                     </div>
-
                   </div>
-
                 </div>
 
-                {/* =========================
-                    PROFILE MODAL
-                ========================= */}
-
+                {/* PROFILE MODAL */}
                 <div
                   className="modal fade"
-                  id={`profile${index}`}
+                  id={`profile${candidate.application_id ?? candidate.id ?? index}`}
                   tabIndex="-1"
+                  aria-labelledby={`profileTitle${candidate.application_id ?? candidate.id ?? index}`}
+                  aria-hidden="true"
                 >
-
                   <div className="modal-dialog modal-lg modal-dialog-centered">
-
                     <div className="modal-content">
 
+                      {/* MODAL HEADER */}
                       <div className="modal-header bg-danger text-white">
-
-                        <h5 className="modal-title">
+                        <h5
+                          className="modal-title"
+                          id={`profileTitle${candidate.application_id ?? candidate.id ?? index}`}
+                        >
                           Candidate Profile
                         </h5>
 
@@ -624,118 +573,123 @@ function RejectedCandidates() {
                           type="button"
                           className="btn-close btn-close-white"
                           data-bs-dismiss="modal"
-                        ></button>
-
+                          aria-label="Close"
+                        />
                       </div>
 
+                      {/* MODAL BODY */}
                       <div className="modal-body p-4">
-
-                        {/* PROFILE */}
-
                         <div className="text-center mb-4">
-
                           <img
-                            src={
-                              candidate.profile_image
-                                ? `http://localhost:5000/${candidate.profile_image}`
-                                : "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
-                            }
-                            alt="profile"
+                            src={getImageUrl(candidate.profile_image)}
+                            alt="Candidate profile"
                             width="140"
                             height="140"
                             className="rounded-circle border border-4 border-danger"
+                            style={{ objectFit: "cover" }}
+                            onError={(event) => {
+                              event.currentTarget.onerror = null;
+                              event.currentTarget.src =
+                                "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+                            }}
                           />
 
                           <h3 className="mt-3">
-                            {candidate.username}
+                            {candidate.username || "N/A"}
                           </h3>
-
                         </div>
 
-                        {/* DETAILS */}
-
+                        {/* PERSONAL DETAILS */}
                         <div className="row">
-
                           <div className="col-md-6">
-
                             <p>
-                              <b>Email:</b>{" "}
-                              {candidate.email}
+                              <strong>Email:</strong>{" "}
+                              {candidate.email || "N/A"}
                             </p>
 
                             <p>
-                              <b>Phone:</b>{" "}
+                              <strong>Phone:</strong>{" "}
                               {candidate.phone || "N/A"}
                             </p>
 
                             <p>
-                              <b>State:</b>{" "}
+                              <strong>State:</strong>{" "}
                               {candidate.state || "N/A"}
                             </p>
 
                             <p>
-                              <b>College:</b>{" "}
+                              <strong>College:</strong>{" "}
                               {candidate.college || "N/A"}
                             </p>
 
                             <p>
-                              <b>Branch:</b>{" "}
+                              <strong>Branch:</strong>{" "}
                               {candidate.branch || "N/A"}
                             </p>
-
                           </div>
 
                           <div className="col-md-6">
-
                             <p>
-                              <b>10th:</b>{" "}
+                              <strong>10th:</strong>{" "}
                               {candidate.tenth || "N/A"}
                             </p>
 
                             <p>
-                              <b>Intermediate:</b>{" "}
+                              <strong>Intermediate:</strong>{" "}
                               {candidate.intermediate || "N/A"}
                             </p>
 
                             <p>
-                              <b>Degree:</b>{" "}
+                              <strong>Degree:</strong>{" "}
                               {candidate.degree || "N/A"}
                             </p>
 
                             <p>
-                              <b>Job Title:</b>{" "}
-                              {candidate.job_title || "N/A"}
+                              <strong>Applied Date:</strong>{" "}
+                              {formatDate(candidate.applied_date)}
                             </p>
-
-                            <p>
-                              <b>Applied Date:</b>{" "}
-                              {candidate.applied_date
-                                ? new Date(
-                                    candidate.applied_date
-                                  ).toLocaleDateString()
-                                : "N/A"}
-                            </p>
-
                           </div>
-
                         </div>
 
                         <hr />
 
-                        <h5>
-                          🛠 Skills
-                        </h5>
+                        {/* JOB DETAILS */}
+                        <h5>❌ Rejected Job Details</h5>
+
+                        <div className="p-3 border rounded mb-3">
+                          <p className="mb-1">
+                            <strong>Rejected For (Job Role):</strong>
+                          </p>
+
+                          <h5 className="text-danger fw-bold">
+                            {candidate.job_title ||
+                              "Role Not Available"}
+                          </h5>
+
+                          <p className="mb-1">
+                            <strong>Company:</strong>{" "}
+                            {candidate.company_name || "N/A"}
+                          </p>
+
+                          <p className="mb-0">
+                            <strong>Status:</strong>{" "}
+                            {candidate.status || "Rejected"}
+                          </p>
+                        </div>
+
+                        <hr />
+
+                        {/* SKILLS */}
+                        <h5>🛠 Skills</h5>
 
                         <p>
-                          {candidate.skills ||
-                            "No Skills Added"}
+                          {candidate.skills || "No Skills Added"}
                         </p>
 
                         {/* RESUME */}
-
                         {candidate.resume_path && (
                           <a
-                            href={`http://localhost:5000/${candidate.resume_path}`}
+                            href={getImageUrl(candidate.resume_path)}
                             target="_blank"
                             rel="noreferrer"
                             className="btn btn-danger mt-3"
@@ -743,23 +697,14 @@ function RejectedCandidates() {
                             📄 View Resume
                           </a>
                         )}
-
                       </div>
-
                     </div>
-
                   </div>
-
                 </div>
-
               </div>
-
             ))
-
           )}
-
         </div>
-
       </div>
     </>
   );
