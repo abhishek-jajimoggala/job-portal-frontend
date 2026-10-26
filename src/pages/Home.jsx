@@ -25,7 +25,19 @@ function Home() {
       });
   }, []);
 
-  const saveJob = async (job) => {
+  
+const saveJob = async (job) => {
+  // Check whether the user is logged in
+  const userId = sessionStorage.getItem("userId");
+
+  if (!userId) {
+    toast.error("Please login first", {
+      position: "top-right",
+      autoClose: 3000,
+    });
+    return;
+  }
+
   try {
     const response = await fetch(
       "http://localhost:5000/api/save-job",
@@ -43,20 +55,22 @@ function Home() {
 
     const data = await response.json();
 
-    if (
-      response.ok &&
-      data.status === "success"
-    ) {
-      toast.success(data.message);
+    if (response.ok && data.status === "success") {
+      toast.success(data.message, {
+        position: "top-right",
+      });
     } else {
-      toast.error(data.message);
+      toast.error(data.message || "Failed to save job", {
+        position: "top-right",
+      });
     }
   } catch (error) {
-    console.log(error);
-    toast.error("Failed to save job");
+    console.error(error);
+    toast.error("Failed to save job", {
+      position: "top-right",
+    });
   }
 };
-
   const filteredJobs = jobs.filter((job) => {
     const search = searchText.toLowerCase();
 
